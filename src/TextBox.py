@@ -1,4 +1,5 @@
 import curses
+from TextPath import Text_Path
 
 class Text_Box:
   def __init__(self, height:int, width:int, start_y:int, start_x:int):
@@ -24,8 +25,11 @@ class Text_Box:
     wrapped_lines.append(text)
     return wrapped_lines
 
-  def draw_box(self, text:str, options:list):
+  def draw_box(self, text_path:Text_Path):
     """Draw the box and display the text with options."""
+    text = text_path.current_text
+    options = text_path.get_options()
+
     self.window.clear()
     self.window.attron(curses.color_pair(16))
     self.window.box()

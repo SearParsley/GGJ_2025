@@ -247,7 +247,9 @@ text_path = Text_Path(initial_dialogue)
 
 def game_loop(stdscr:curses.window):
 
-  # set up
+  '''
+  Set-up
+  '''
   curses.curs_set(0)
   stdscr.nodelay(True)
   stdscr = curses.initscr()
@@ -259,8 +261,9 @@ def game_loop(stdscr:curses.window):
   middle_column = int(num_cols / 2)
   
   bg_window = curses.newwin(num_rows, num_cols, 0, 0)
-
   game_state = Game_State(bg_window)
+
+
 
   '''
   Title Screen
@@ -285,7 +288,6 @@ def game_loop(stdscr:curses.window):
 
   stdscr.refresh()
   
-
   while True:
     # wait for input
     key = stdscr.getch()
@@ -295,21 +297,12 @@ def game_loop(stdscr:curses.window):
 
 
 
-
-
-
-
-
+  '''
+  Main Set-up
+  '''
 
   stdscr.clear()
   stdscr.refresh()
-
-
-
-
-  '''
-  Main Stuff
-  '''
 
   # Text box
   box_height = 10
@@ -319,9 +312,7 @@ def game_loop(stdscr:curses.window):
   text_box = Text_Box(box_height, box_width, box_y, box_x)
 
   # Display current text and options
-  current_text = text_path.get_current_text()
-  options = text_path.get_options()
-  text_box.draw_box(current_text, options)
+  text_box.draw_box(text_path)
 
   key_state = None  # Track the current key state
   last_key_time = time.time()  # Timestamp of the last key press
@@ -345,39 +336,38 @@ def game_loop(stdscr:curses.window):
 
     current_time = time.time()
 
-    # Check for player's life
-    if game_state.get_health() <= 0 and not dead:  # If life reaches 0, exit the dialogue loop
+    # Check if player is dead
+    if game_state.get_health() <= 0 and not dead:  # If life reaches 0, declare player dead X.X
       dead = True
       text_path.set_current_text("No further actions are available. By age or decay, ascension or destruction, your life has met its end. Game Over.")
       text_path.set_options([
         ("Exit Game", exit_game, None),
       ])
-      text_box.draw_box(text_path.get_current_text(), text_path.get_options())
+      text_box.draw_box(text_path)
 
     if key != -1:  # A key is pressed
       if not key_pressed:  # Only process the key if not already pressed
         key_state = key  # Update the key state
         key_pressed = True  # Mark the key as pressed
-        last_key_time = current_time  # Reset the timestamp
+        last_key_time = current_time  # Reset timestamp
         key_count += 1
+
+        options = text_path.get_options()
 
         # Handle specific key presses
         if key_state == ord('q'):  # Quit the game
           break
         
         elif key_state in range(ord('1'), ord('1') + len(options)):
-          # Choose the option based on user input
+          # Choose dialogue option based on user input
           option_index = key_state - ord('1')
           text_path.choose_option(option_index, game_state)
 
-          # Update current text and options
-          current_text = text_path.get_current_text()
+          # Draw text box with current dialogue
+          text_box.draw_box(text_path)
+
           options = text_path.get_options()
-
-          # Draw text box with current text and available options
-          text_box.draw_box(current_text, options)
-
-          if len(text_path.get_options()) == 0: in_dialogue = False
+          if len(options) == 0: in_dialogue = False
 
     # Reset key state if no key is pressed for a short period
     if current_time - last_key_time > 0.2:  # 200ms debounce period
