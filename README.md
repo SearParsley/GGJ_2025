@@ -84,6 +84,18 @@ I did make small edits to a few of the versions within the game, but  all the on
    `-'
 ```
 
+[Fire](https://ascii.co.uk/art/fire)
+```
+               (  .      )
+           )           (              )
+                 .  '   .   '  .  '  .
+        (    , )       (.   )  (   ',    )
+         .' ) ( . )    ,  ( ,     )   ( .
+      ). , ( .   (  ) ( , ')  .' (  ,    )
+     (_,) . ), ) _) _,')  (, ) '. )  ,. (' )
+ jgs^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+```
+
 [Bird](https://asciiart.website/index.php?art=animals/birds%20(land))
 ```
                                                _,;
