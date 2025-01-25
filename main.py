@@ -68,7 +68,10 @@ def game_loop(stdscr=curses.window):
   key_count = 0  # Count of valid key presses
   key_pressed = False  # Flag to track if key is pressed
 
-  while True:
+
+  in_dialogue = True
+
+  while in_dialogue:
     key = stdscr.getch()  # Get the key (non-blocking)
 
     current_time = time.time()
@@ -93,6 +96,8 @@ def game_loop(stdscr=curses.window):
           current_text = text_path.get_current_text()
           options = text_path.get_options()
           text_box.draw_box(current_text, options)
+
+          if len(text_path.get_options) == 0: in_dialogue = False
 
     # Reset key state if no key is pressed for a short period
     if current_time - last_key_time > 0.2:  # 200ms debounce period

@@ -4,10 +4,6 @@ class Text_Path:
   def __init__(self, dialogue=list):
     """
     Initialize the Text_Path with a dialogue tree.
-    
-    :param dialogue_tree: A dictionary representing the dialogue tree.
-                          Keys are node IDs, and values are tuples of (text, options).
-                          Each option is a tuple of (option_text, next_node_id).
     """
     self.dialogue = dialogue
     self.current_text = self.dialogue[0][0]
