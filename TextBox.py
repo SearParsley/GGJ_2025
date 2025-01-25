@@ -35,14 +35,14 @@ class Text_Box:
     for i, line in enumerate(wrapped_text[:self.height - 3]):  # Reserve space for options
       # Ensure the cursor stays within window bounds
       if 1 + i < self.height - 1:  # Leave 1 space at the bottom for borders
-        self.window.addstr(1 + i, 1, line[:self.width - 2])
+        self.window.addstr(1 + i, 2, line[:self.width - 2])
 
     # Display the options below the main text
     for i, (option_text, _) in enumerate(options[:self.height - len(wrapped_text) - 2]):
       # Ensure options fit below the text and within the window
       if len(wrapped_text) + 1 + i < self.height - 1:
         option_line = f"{i + 1}. {option_text}"
-        self.window.addstr(len(wrapped_text) + 1 + i, 1, option_line[:self.width - 2])
+        self.window.addstr(len(wrapped_text) + 1 + i, 2, option_line[:self.width - 2])
 
     self.window.refresh()
 
