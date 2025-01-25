@@ -48,8 +48,10 @@ You play as a tree, and must make branching (pun intended) decisions to survive 
 
 Run the game with the following command:
 ```bash
-python main.py
+python src/main.py
 ```
+
+Make sure you are in the project directory (`GGJ_2025`)
 
 ### Exiting the Game
 
@@ -71,6 +73,15 @@ I did make small edits to a few of the versions within the game, but  all the on
    .---. \/
   (._.' \()
    ^"""^"
+```
+
+[Bee](https://asciiart.website/index.php?art=animals/insects/bees)
+```
+   ,-.
+   \_/
+  {|||)<
+   / \
+   `-'
 ```
 
 [Spider](https://ascii.co.uk/art/bug)
@@ -271,6 +282,20 @@ I did make small edits to a few of the versions within the game, but  all the on
    `-.-'
   
   -shimrod
+```
+
+[Acorn]()
+```
+            _
+          _/-\_
+       .-`-:-:-`-.
+      /-:-:-:-:-:-\
+      \:-:-:-:-:-:/
+       |`       `|
+       |         |
+  jgs  `\       /'
+         `-._.-'
+            `
 ```
 
 [Fly](https://ascii.co.uk/art/fly)

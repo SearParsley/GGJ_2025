@@ -9,20 +9,18 @@ import palette
 
 
 
-game_state = Game_State()
 
 
 
-
-def get_lucky():
+def get_lucky(game_state):
   """Get a lucky integer between 0 to 100"""
   return random.randrange(70) + game_state.get_luck()
 
 
 
-def pass_time():
+def pass_time(game_state):
   """Action for passing time surroundings"""
-  chance = get_lucky()
+  chance = get_lucky(game_state)
 
   if chance <= 10:
     # lumberjack
@@ -90,7 +88,7 @@ def pass_time():
 
 
 
-def grow():
+def grow(game_state):
   """Action for growth"""
   text_path.set_current_text("testing")
   text_path.set_options([
@@ -110,15 +108,15 @@ def player_death(text_path, text_box):
   
 
 
-dialogue_tree = (
-  f"Standing at a modest height of {game_state.get_height()}, ",
+initial_dialogue = (
+  "You are a lone tree. Winter is approaching. Do what you must to survive.",
   [
-    ("Observe your suroundings", observe, None),
-    ("Attend to growth", grow, None),
+    ("Stand tall against the sands of time", pass_time, None),
+    # ("Attend to growth", grow, None),
   ],
 )
 
-text_path = Text_Path(dialogue_tree)
+text_path = Text_Path(initial_dialogue)
 
 
 
@@ -131,7 +129,7 @@ def game_loop(stdscr=curses.window):
   stdscr.clear()
   palette.init_colors()
 
-
+  game_state = Game_State(stdscr)
 
   '''
   Title Screen
@@ -141,7 +139,7 @@ def game_loop(stdscr=curses.window):
   middle_row = int(num_rows / 2)
   middle_column = int(num_cols / 2)
 
-  title = Text_Image('ASCII/title.txt', stdscr, curses.color_pair(16)) # TODO: title text color
+  title = Text_Image('./ASCII/title.txt', stdscr, curses.color_pair(16)) # TODO: title text color
   title_x = middle_column - int(title.get_width() / 2) + 4
   title_y = middle_row - int(title.get_height() * 1) + 2
 
@@ -149,7 +147,7 @@ def game_loop(stdscr=curses.window):
   instructions_x = middle_column - int(len(instructions_text) / 2) - 2
   instructions_y = middle_row + 4
 
-  ascii_bug = Text_Image('ASCII/bug.txt', stdscr, curses.color_pair(17)) # TODO: bug color
+  ascii_bug = Text_Image('./ASCII/bug.txt', stdscr, curses.color_pair(17)) # TODO: bug color
   bug_x = 76
   bug_y = 15
 
@@ -233,7 +231,7 @@ def game_loop(stdscr=curses.window):
         elif key_state in range(ord('1'), ord('1') + len(options)):
           # Choose the option based on user input
           option_index = key_state - ord('1')
-          text_path.choose_option(option_index)
+          text_path.choose_option(option_index, game_state)
 
           # Update current text and options
           current_text = text_path.get_current_text()

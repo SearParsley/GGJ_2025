@@ -41,7 +41,7 @@ class Text_Path:
     """Set the text of the current dialogue node."""
     self.options = new_options
 
-  def choose_option(self, option_index):
+  def choose_option(self, option_index, game_state):
     """Choose a dialogue option and execute the action."""
     action = self.options[option_index][1]
-    action()
+    action(game_state)

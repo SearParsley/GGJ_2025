@@ -45,7 +45,7 @@ class Text_Box:
       # Ensure options fit below the text and within the window
       if len(wrapped_text) + 1 + i < self.height - 1:
         option_line = f"{i + 1}. {option_text}"
-        self.window.addstr(len(wrapped_text) + 1 + i, 2, option_line[:self.width - 2])
+        self.window.addstr(len(wrapped_text) + 2 + i, 2, option_line[:self.width - 2])
 
     self.window.refresh()
 

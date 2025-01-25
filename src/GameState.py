@@ -1,15 +1,15 @@
 class Game_State:
-  def __init__(self):
+  def __init__(self, window):
+    self.window = window
     self.health = 100
-    self.height = 1
     self.luck = 0
     self.resources = []
 
-  def get_height(self):
-    return self.height
+  def get_window(self):
+    return self.window
 
-  def set_height(self, new_height):
-    self.height = new_height
+  def set_window(self, new_window):
+    self.window = new_window
 
   def get_health(self):
     return self.health
