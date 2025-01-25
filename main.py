@@ -56,47 +56,57 @@ def grow(text_path=Text_Path):
       ("", exit, None),
     ])
 
+def player_death(text_path=Text_Path, text_box=Text_Box):
+  current_text = "No further actions are available. Whether it be age or decay, your life has met its end. Game Over."
+  options = [("Exit Game", exit, None)]
+  text_path.set_current_text(current_text)
+  text_path.set_options(options)
+  new_options = text_path.get_options()
+  text_box.draw_box(current_text, new_options)
 
 
 
 
 def game_loop(stdscr=curses.window):
 
+  # set up
   curses.curs_set(0)
-
-  # set things up
   stdscr.nodelay(True)
   stdscr.clear()
   stdscr = curses.initscr()
   palette.init_colors()
-  stdscr.nodelay(True)
-
-  stdscr.clear()
-
-  
 
 
+
+
+  '''
+  Title Screen
+  '''
   
   num_rows, num_cols = stdscr.getmaxyx()
   middle_row = int(num_rows / 2)
   middle_column = int(num_cols / 2)
 
-  title_window = curses.newwin(num_rows, num_cols, 0, 0)
+  title = Text_Image('ASCII/temp.txt', stdscr, curses.color_pair(16))
+  title_x = middle_column - int(title.get_width() / 2) + 4
+  title_y = middle_row - int(title.get_height() * 1) + 2
 
-  title = Text_Image('ASCII/temp.txt', title_window, curses.color_pair(16))
-  title_x = middle_column - int(title.get_width() / 2)
-  title_y = middle_row - int(title.get_height() / 2)
+  instructions_text = "Press any button to start"
+  instructions_x = middle_column - int(len(instructions_text) / 2) - 2
+  instructions_y = middle_row + 4
 
-  # instructions_text = "Press any button to start"
-  # instructions_x = middle_column - int(len(instructions_text) / 2)
-  # instructions_y = middle_row
-  title_window.clear()
+  ascii_bug = Text_Image('ASCII/bug.txt', stdscr, curses.color_pair(17))
+  bug_x = 76
+  bug_y = 15
 
   # draw title stuff
-  title.draw(0, 0)
-  # stdscr.addstr(instructions_y, instructions_x, instructions_text, curses.color_pair(16) | curses.A_BLINK)
+  title.draw(title_x, title_y)
+  stdscr.addstr(instructions_y, instructions_x, instructions_text, curses.color_pair(16) | curses.A_BLINK)
+  ascii_bug.draw(bug_x, bug_y)
 
-  title_window.refresh()
+  stdscr.refresh()
+  
+
   while True:
     # wait for input
     key = stdscr.getch()
@@ -109,6 +119,18 @@ def game_loop(stdscr=curses.window):
 
 
 
+
+
+
+  stdscr.clear()
+  stdscr.refresh()
+
+
+
+
+  '''
+  Main Stuff
+  '''
 
   # Text box
   box_height = 10
@@ -138,6 +160,12 @@ def game_loop(stdscr=curses.window):
   key_pressed = False  # Flag to track if key is pressed
 
 
+
+
+
+
+
+
   in_dialogue = True
 
   while in_dialogue:
@@ -154,13 +182,7 @@ def game_loop(stdscr=curses.window):
 
         # Handle specific key presses
         if key_state == ord('q'):  # Quit the game
-          # player death
-          current_text = "No further actions are available. Whether it be age or decay, your life has met its end. Game Over."
-          options = [("Exit Game", exit, None)]
-          text_path.set_current_text(current_text)
-          text_path.set_options(options)
-          options = text_path.get_options()
-          text_box.draw_box(current_text, options)
+          player_death(text_path, text_box)
 
         elif key_state in range(ord('1'), ord('1') + len(options)):
           # Choose the option based on user input

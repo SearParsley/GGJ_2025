@@ -9,17 +9,18 @@ class Text_Image:
     self.height = 0
 
     with open(self.path, 'r') as file:
-      self.text = file.read()
+      text = file.read()
+      self.text = text
+      for line in self.text.splitlines():
+        self.height += 1
+        self.width = max(len(line), self.width)
 
-    # for line in enumerate(self.text.splitlines()):
-    #   self.height += 1
-    #   if len(line) > self.width: self.width = len(line)
-    
+
   def draw(self, start_x, start_y):
     for i, line in enumerate(self.text.splitlines()):
       self.window.addstr(i + start_y, start_x, line, self.color)
 
-  def refresh(self):
+  def refresh(self):  
     self.window.refresh()
 
   def get_width(self):
