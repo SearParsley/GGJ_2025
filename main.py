@@ -72,8 +72,8 @@ def game_loop(stdscr=curses.window):
   # set up
   curses.curs_set(0)
   stdscr.nodelay(True)
-  stdscr.clear()
   stdscr = curses.initscr()
+  stdscr.clear()
   palette.init_colors()
 
 

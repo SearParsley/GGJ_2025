@@ -10,6 +10,6 @@ colors = [
 def init_colors():
   curses.start_color()
 
-  for i in range(len(colors)):
-    print(colors[i])
-    curses.init_pair(i+16, colors[i], curses.COLOR_BLACK)
+  for i, color in enumerate(colors):
+    print(color)
+    curses.init_pair(i+16, color, curses.COLOR_BLACK)
