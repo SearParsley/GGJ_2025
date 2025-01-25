@@ -15,7 +15,7 @@ class Text_Box:
     if not isinstance(text, str): text = str(text)
 
     wrapped_lines = []
-    max_line_length = self.width - 2  # Subtract 2 for the box borders
+    max_line_length = self.width - 3  # Subtract 3 for the box borders
 
     while len(text) > max_line_length:
       wrapped_lines.append(text[:max_line_length])

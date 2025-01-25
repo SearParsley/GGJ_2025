@@ -267,7 +267,7 @@ Mushroom - protection against animals
 
 
 initial_dialogue = (
-  "You are a lone tree, atop a small hill. Mother Nature can be a cuel mistress. Do what you must to survive.",
+  "You are a lone tree, atop a small hill. Mother Nature can be a cuel mistress. Do what you must to survive.         To follow a prompt, push the requisite numbered key.",
   [
     ("Stand tall against the sands of time", pass_time, None),
     # ("Attend to growth", grow, None),
