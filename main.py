@@ -2,18 +2,9 @@ import curses
 import time
 from TextBox import Text_Box
 from TextPath import Text_Path
+from TextImage import Text_Image
 import palette
 
-def load_ascii_art(file_path):
-  with open(file_path, 'r') as file:
-    return file.read()
-
-def draw_ascii_art(ascii_art, start_x, start_y, window, color):
-  for i, line in enumerate(ascii_art.splitlines()):
-    window.addstr(i + start_y, start_x, line, color)
-
-  # for i, line in enumerate(ascii_bug.splitlines()):
-  #   bug_window.addstr(i, 0, line)
 
 
 
@@ -37,23 +28,28 @@ def game_loop(stdscr=curses.window):
   box_x = 2
   text_box = Text_Box(box_height, box_width, box_y, box_x)
 
+  pest_window = curses.newwin(num_rows, num_rows, 0, 0)
+
   # bug!
+  ascii_bug = Text_Image('ASCII/bug.txt', pest_window, curses.color_pair(17))
   bug_x = 16
   bug_y = 4
-  bug_color = curses.color_pair(17)
-  ascii_bug = load_ascii_art('ASCII/bug.txt')
-  bug_window = curses.newwin(num_rows, num_rows, bug_y, bug_x)
-  draw_ascii_art(ascii_bug, bug_x, bug_y, bug_window, bug_color)
+  ascii_bug.draw(bug_x, bug_y)
 
-  def show_bug():
-    bug_window.refresh
-    
-  
+  # spider!
+  ascii_spider = Text_Image('ASCII/spider.txt', pest_window, curses.color_pair(18))
+  spider_x = 8
+  spider_y = 2
+  ascii_spider.draw(spider_x, spider_y)
+
+  def show_pests():
+    ascii_bug.show()
+    ascii_spider.show()
 
 
   dialogue_tree = [
     ("Welcome to the dialogue tree!", [
-      ("Show me the bug", bug_window.refresh),
+      ("Show me the bug", show_pests),
     ]),
   ]
 
