@@ -84,6 +84,34 @@ I did make small edits to a few of the versions within the game, but  all the on
    `-'
 ```
 
+[Mushroom](https://www.asciiart.eu/plants/mushroom)
+```
+           ___..._
+      _,--'       "`-.
+    ,'.  .            \
+  ,/:. .     .       .'
+  |;..  .      _..--'
+  `--:...-,-'""\
+          |:.  `.
+          l;.   l
+          `|:.   |
+           |:.   `.,
+          .l;.    j, ,
+       `. \`;:.   //,/
+        .\\)`;,|\'/(
+         ` `itz `(,
+```
+
+[Axe](https://ascii.co.uk/art/axe)
+```
+   /'-./\_
+  :    ||,>
+   \.-'||
+       ||
+       ||
+       ||   pjb
+```
+
 [Fire](https://ascii.co.uk/art/fire)
 ```
                (  .      )
@@ -376,6 +404,19 @@ I did make small edits to a few of the versions within the game, but  all the on
     "'\'"""""'),
        )/---,( 
   PjP / \  / |      , '     , '   , '   ,'   ,'    ,'   ;     ;
+```
+
+[Sun]()
+```
+      ;   :   ;
+   .   \_,!,_/   ,
+    `.,'     `.,'
+     /         \
+~ -- :         : -- ~
+     \         /
+    ,'`._   _.'`.
+   '   / `!` \   `
+      ;   :   ;  hjw
 ```
 
 [Cat Eyes](https://ascii.co.uk/art/cat)

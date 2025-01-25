@@ -18,7 +18,7 @@ def exit_game(game_state:Game_State):
 
 def get_lucky(game_state:Game_State):
   """Get a lucky integer between 0 to 100"""
-  return min(random.randrange(50) + (random.random() * game_state.get_luck() * 2), 100)
+  return min(random.randrange(50) + (random.random() * game_state.get_luck() * 3), 100)
 
 
 
@@ -62,31 +62,98 @@ def sacrifice_hydration(game_state:Game_State):
   ])
 
 def burn(game_state:Game_State):
-  for res in ["Acorn", "Moss", "Bark", "Nest"]:
+  for res in ["Acorn", "Moss", "Bark", "Nest", "Stick"]:
     game_state.remove_resource(res)
   
-  game_state.set_health(game_state.get_health() - 45)
+  game_state.set_health(game_state.get_health() - 40)
 
   text_path.set_current_text("The fire has harmed you gravely. All flammable resources have been burned away.")
   text_path.set_options([
-    ("Try to recover what little you can", recover, None),
+    ("Try to recover what little you can", recover_event, None),
   ])
+
+
 
 def lumberjack(game_state:Game_State):
   game_state.window.clear()
 
-  text_path.set_current_text("lumberjack prompt") # TODO: lumberjack
+  ascii_axe = Text_Image('./ASCII/axe.txt', game_state.window, curses.color_pair(17))
+  axe_x, axe_y = bg_center(ascii_axe, game_state)
+  ascii_axe.draw(axe_x, axe_y - 2)
+  ascii_handle = Text_Image('./ASCII/handle.txt', game_state.window, curses.color_pair(22))
+  ascii_handle.draw(axe_x + 5, axe_y - 2)
+
+  game_state.window.refresh()
+
+  text_path.set_current_text("A burly man approaches, carrying a hatchet in his left hand. It looks like he's looking for lumber.")
   text_path.set_options([
-    ("option 1", pass_time, None),
-    ("option 2", pass_time, None),
+    ("Stand firm and hope for the best", get_chopped, None),
+    ("Command your fungi allies to release harmful spores upon the man", spores_lumberjack, game_state.has_resource("Mushroom")),
   ])
+
+def get_chopped(game_state:Game_State):
+  if game_state.has_resource("Bark"):
+    game_state.remove_resource("Bark")
+    game_state.add_resource("Stick")
+    game_state.set_health(game_state.get_health() - 10)
+    text_path.set_current_text("Although shattered into twigs, your bark proved a worthy opponent against the man's axe.")
+  else:
+    game_state.set_health(game_state.get_health() - 20)
+    text_path.set_current_text("The beast of a man hacked into your core, leaving you with gashes that may not heal for many winters to come.")
+
+  text_path.set_options([
+    ("Attempt to mend your wounds", recover_event, None),
+  ])
+
+def spores_lumberjack(game_state:Game_State):
+  game_state.window.clear()
+
+  ascii_mushroom = Text_Image('./ASCII/mushroom.txt', game_state.window, curses.color_pair(22))
+  mushroom_x, mushroom_y = bg_center(ascii_mushroom, game_state)
+  ascii_mushroom.draw(mushroom_x, mushroom_y)
+
+  game_state.window.refresh()
+
+  text_path.set_current_text("The man first spats in surprise, then with disgust. He coughs, then turns quickly and departs.")
+  text_path.set_options([
+    ("Angle your leaves to maximize solar energy input", increase_luck, game_state.has_resource("Leaves")),
+    ("Syphon nutrients from the mushrooms into your roots", consume_mushroom, game_state.has_resource("Mushroom")),
+  ])
+
+def consume_mushroom(game_state:Game_State):
+
+  game_state.remove_resource("Mushroom")
+  dmg = int(60 / get_lucky(game_state))
+  game_state.set_health(game_state.get_health() - dmg)
+  increase_luck(game_state)
+  increase_luck(game_state)
+
+  game_state.window.clear()
+
+  ascii_mushroom = Text_Image('./ASCII/mushroom.txt', game_state.window, curses.color_pair(22))
+  mushroom_x, mushroom_y = bg_center(ascii_mushroom, game_state)
+  ascii_mushroom.draw(mushroom_x - 16, mushroom_y)
+  ascii_tree = Text_Image('./ASCII/tree.txt', game_state.window, curses.color_pair(20))
+  tree_x, tree_y = bg_center(ascii_tree, game_state)
+  ascii_tree.draw(tree_x + 18, tree_y)
+
+  game_state.window.refresh()
+
+  text_path.set_current_text("Your roots knew of the toxins, but power often comes at a cost. The mushrooms are no more.")
+  text_path.set_options([
+    ("Overlook your small, yet glorious hill", pass_time, None),
+  ])
+
+
 
 def storm(game_state:Game_State):
   text_path.set_current_text("storm prompt") # TODO: storm
   text_path.set_options([
-    ("option 1", pass_time, None),
-    ("option 2", pass_time, None),
+    ("option 1", luck_event, None),
+    ("option 2", recover_event, None),
   ])
+
+
 
 def woodpecker(game_state:Game_State):
   game_state.window.clear()
@@ -94,7 +161,6 @@ def woodpecker(game_state:Game_State):
   ascii_woodpecker = Text_Image('./ASCII/woodpecker.txt', game_state.window, curses.color_pair(17))
   woodpecker_x, woodpecker_y = bg_center(ascii_woodpecker, game_state)
   ascii_woodpecker.draw(woodpecker_x-3, woodpecker_y)
-
   ascii_trunk = Text_Image('./ASCII/trunk.txt', game_state.window, curses.color_pair(22))
   ascii_trunk.draw(woodpecker_x+3, woodpecker_y)
 
@@ -120,7 +186,7 @@ def sacrifice_grubs(game_state:Game_State):
 
   text_path.set_current_text("The intruder quickly leaves after finding its dinner in your recesses.")
   text_path.set_options([
-    ("Make some chlorophyll", recover, None),
+    ("Make some chlorophyll", recover_event, None),
     ("Meditate on the nature of stones", increase_luck, None),
   ])  
 
@@ -132,12 +198,16 @@ def get_pecked(game_state:Game_State):
     ("Contemplate the seasons", pass_time, None),
   ])  
 
+
+
 def snow(game_state:Game_State):
   text_path.set_current_text("snow prompt") # TODO: snow
   text_path.set_options([
     ("option 1", pass_time, None),
     ("option 2", pass_time, None),
   ])
+
+
 
 def spider(game_state:Game_State):
   text_path.set_current_text("spider prompt") # TODO: spider
@@ -146,12 +216,16 @@ def spider(game_state:Game_State):
     ("option 2", pass_time, None),
   ])
 
+
+
 def bird(game_state:Game_State):
   text_path.set_current_text("bird prompt") # TODO: bird
   text_path.set_options([
     ("option 1", pass_time, None),
     ("option 2", pass_time, None),
   ])
+
+
 
 def rain(game_state:Game_State):
   text_path.set_current_text("rain prompt") # TODO: rain
@@ -160,6 +234,8 @@ def rain(game_state:Game_State):
     ("option 2", pass_time, None),
   ])
 
+
+
 def friend(game_state:Game_State):
   text_path.set_current_text("friend prompt") # TODO: friend
   text_path.set_options([
@@ -167,8 +243,39 @@ def friend(game_state:Game_State):
     ("option 2", pass_time, None),
   ])
 
+
+
 def sun(game_state:Game_State):
-  text_path.set_current_text("sun prompt") # TODO: sun
+  game_state.window.clear()
+  ascii_sun = Text_Image('./ASCII/sun.txt', game_state.window, curses.color_pair(23))
+  sun_x, sun_y = bg_center(ascii_sun, game_state)
+  ascii_sun.draw(sun_x + 1, 4)
+  game_state.window.refresh()
+
+  text_path.set_current_text("The sun shines brightly overhead, showering you with delicious ultraviolet rays.")
+  text_path.set_options([
+    ("Convert those sweet rays into precious nutrients", absorb_rays, game_state.has_resource("Leaves")),
+    ("Take the opportunity to sprout an acorn", gain_acorn, (game_state.has_resource("Hydrated") and not game_state.has_resource("Acorn"))),
+    ("Simply bask in the sun's glory", recover_event, None),
+  ])
+
+def absorb_rays(game_state:Game_State):
+  recover(game_state)
+  recover(game_state)
+  luck_event(game_state)
+
+def gain_acorn(game_state:Game_State):
+  game_state.window.clear()
+  ascii_acorn = Text_Image('./ASCII/acorn.txt', game_state.window, curses.color_pair(16))
+  acorn_x, acorn_y = bg_center(ascii_acorn, game_state)
+  ascii_acorn.draw(acorn_x, acorn_y - 3)
+  ascii_cap = Text_Image('./ASCII/cap.txt', game_state.window, curses.color_pair(22))
+  ascii_cap.draw(acorn_x, acorn_y - 8)
+  game_state.window.refresh()
+
+  game_state.add_resource("Acorn")
+
+  text_path.set_current_text("You have produced an acorn. Now all it needs is its own space to propagate.")
   text_path.set_options([
     ("option 1", pass_time, None),
     ("option 2", pass_time, None),
@@ -176,7 +283,45 @@ def sun(game_state:Game_State):
 
 
 
+def recover(game_state:Game_State):
+  addition = int(get_lucky(game_state) / 10)
+  game_state.set_health(game_state.get_health() + addition)
+  pass_time(game_state)
 
+def recover_event(game_state:Game_State):
+  recover(game_state)
+
+  game_state.window.clear()
+  ascii_tree = Text_Image('./ASCII/tree.txt', game_state.window, curses.color_pair(20))
+  tree_x, tree_y = bg_center(ascii_tree, game_state)
+  ascii_tree.draw(tree_x, tree_y)
+  game_state.window.refresh()
+
+  text_path.set_current_text("Recovery was successful.")
+  text_path.set_options([
+    ("Continue", pass_time, None),
+  ])
+
+  
+
+def increase_luck(game_state:Game_State):
+  addition = int(get_lucky(game_state) / 15)
+  game_state.set_luck(game_state.get_luck() + addition)
+  pass_time(game_state)
+
+def luck_event(game_state:Game_State):
+  increase_luck(game_state)
+
+  game_state.window.clear()
+  ascii_tree = Text_Image('./ASCII/tree.txt', game_state.window, curses.color_pair(20))
+  tree_x, tree_y = bg_center(ascii_tree, game_state)
+  ascii_tree.draw(tree_x, tree_y)
+  game_state.window.refresh()
+
+  text_path.set_current_text("Mother Nature smiles upon you.")
+  text_path.set_options([
+    ("Continue", pass_time, None),
+  ])
 
 
 
@@ -184,13 +329,13 @@ def sun(game_state:Game_State):
 # List of (luck threshold, function, cooldown) tuples
 events = [
   (10, fire, 3),
-  (20, lumberjack, 2),
+  (20, lumberjack, 3),
   (30, storm, 3),
   (40, woodpecker, 2),
   (50, snow, 3),
   (60, spider, 2),
-  (70, bird, 1),
-  (80, rain, 3),
+  (70, bird, 2),
+  (80, rain, 1),
   (90, friend, 3),
   (100, sun, 1),
 ]
@@ -224,7 +369,7 @@ def pass_time(game_state:Game_State):
 
   game_state.window.clear()
 
-  woodpecker(game_state)
+  sun(game_state)
   return
 
 
@@ -238,20 +383,12 @@ def pass_time(game_state:Game_State):
       event(game_state)  # Trigger the event
       event_history.append(event_name)  # Add to event history
       break  # Stop checking once a match is found
+  
+  choice = random.randrange(len(events))
+  
 
 
 
-def recover(game_state:Game_State):
-  addition = int(get_lucky(game_state) / 10)
-  game_state.set_health(game_state.get_health() + addition)
-  pass_time(game_state)
-
-
-
-def increase_luck(game_state:Game_State):
-  addition = int(get_lucky(game_state) / 15)
-  game_state.set_luck(game_state.get_luck() + addition)
-  pass_time(game_state)
 
 
 '''
@@ -262,12 +399,13 @@ Flower - bugs
 Nest - protection against lumberjack
 Hydration - protection against fire, bad in the cold
 Mushroom - protection against animals
+Stick - turns into nest
 '''
 
 
 
 initial_dialogue = (
-  "You are a lone tree, atop a small hill. Mother Nature can be a cuel mistress. Do what you must to survive.         To follow a prompt, push the requisite numbered key.",
+  "You are a lone tree, atop a small hill. Mother Nature can be a cruel mistress. Do what you must to survive.         To follow a prompt, push the requisite numbered key.",
   [
     ("Stand tall against the sands of time", pass_time, None),
     # ("Attend to growth", grow, None),
