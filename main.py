@@ -57,8 +57,26 @@ def grow(text_path=Text_Path):
     ])
 
 
-def title_screen(stdscr=curses.window):
 
+
+
+def game_loop(stdscr=curses.window):
+
+  curses.curs_set(0)
+
+  # set things up
+  stdscr.nodelay(True)
+  stdscr.clear()
+  stdscr = curses.initscr()
+  palette.init_colors()
+  stdscr.nodelay(True)
+
+  stdscr.clear()
+
+  
+
+
+  
   num_rows, num_cols = stdscr.getmaxyx()
   middle_row = int(num_rows / 2)
   middle_column = int(num_cols / 2)
@@ -88,23 +106,9 @@ def title_screen(stdscr=curses.window):
 
 
 
-def game_loop(stdscr=curses.window):
 
-  curses.curs_set(0)
 
-  # set things up
-  stdscr.nodelay(True)
-  stdscr.clear()
-  stdscr = curses.initscr()
-  palette.init_colors()
-  stdscr.nodelay(True)
 
-  stdscr.clear()
-
-  title_screen(stdscr)
-
-  num_rows, num_cols = stdscr.getmaxyx()
-  middle_row = int(num_rows / 2)
 
   # Text box
   box_height = 10
@@ -155,6 +159,7 @@ def game_loop(stdscr=curses.window):
           options = [("Exit Game", exit, None)]
           text_path.set_current_text(current_text)
           text_path.set_options(options)
+          options = text_path.get_options()
           text_box.draw_box(current_text, options)
 
         elif key_state in range(ord('1'), ord('1') + len(options)):
