@@ -137,8 +137,6 @@ def sun(game_state:Game_State):
 
 
 
-def check_life(game_state:Game_State):
-  if game_state.get_health() <= 0: death(game_state)
 
 
 
@@ -184,9 +182,6 @@ def can_trigger_event(event_name, cooldown):
 
 def pass_time(game_state:Game_State):
   """Action for passing time"""
-  check_life(game_state)
-
-
   chance = get_lucky(game_state)
 
   # Iterate over the list to find the matching event
@@ -201,16 +196,12 @@ def pass_time(game_state:Game_State):
 
 
 def recover(game_state:Game_State):
-  check_life(game_state)
-
   pass_time(game_state)
 
 
 
 def grow(game_state:Game_State):
   """Action for growth"""
-  check_life(game_state)
-
   text_path.set_current_text("testing")
   text_path.set_options([
     ("pass time", pass_time, None),
@@ -219,8 +210,11 @@ def grow(game_state:Game_State):
 
 
 
+def is_dead(game_state:Game_State):
+  if game_state.get_health() <= 0: death(game_state)
+
 def death(game_state:Game_State):
-  text_path.set_current_text("No further actions are available. By age or decay, your life has met its end. Game Over.")
+  text_path.set_current_text("No further actions are available. By age or decay, ascension or destruction, your life has met its end. Game Over.")
   text_path.set_options([
     ("Exit Game", exit_game, None),
   ])
@@ -344,11 +338,21 @@ def game_loop(stdscr:curses.window):
   '''
 
   in_dialogue = True
+  dead = False
 
   while in_dialogue:
     key = stdscr.getch()  # Get the key (non-blocking)
 
     current_time = time.time()
+
+    # Check for player's life
+    if game_state.get_health() <= 0 and not dead:  # If life reaches 0, exit the dialogue loop
+      dead = True
+      text_path.set_current_text("No further actions are available. By age or decay, ascension or destruction, your life has met its end. Game Over.")
+      text_path.set_options([
+        ("Exit Game", exit_game, None),
+      ])
+      text_box.draw_box(text_path.get_current_text(), text_path.get_options())
 
     if key != -1:  # A key is pressed
       if not key_pressed:  # Only process the key if not already pressed
