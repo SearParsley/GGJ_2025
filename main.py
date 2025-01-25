@@ -28,7 +28,7 @@ def game_loop(stdscr=curses.window):
   box_x = 2
   text_box = Text_Box(box_height, box_width, box_y, box_x)
 
-  pest_window = curses.newwin(num_rows, num_rows, 0, 0)
+  pest_window = curses.newwin(num_rows, num_cols-box_height-1, 0, 0)
 
   # bug!
   ascii_bug = Text_Image('ASCII/bug.txt', pest_window, curses.color_pair(17))
@@ -46,12 +46,12 @@ def game_loop(stdscr=curses.window):
     ascii_bug.show()
     ascii_spider.show()
 
-
   dialogue_tree = [
     ("Welcome to the dialogue tree!", [
       ("Show me the bug", show_pests),
     ]),
   ]
+
 
 
 
@@ -101,26 +101,6 @@ def game_loop(stdscr=curses.window):
     time.sleep(0.01)  # Small delay to reduce CPU usage
 
 
-
-  # center_y = num_rows - box_height
-  # mid_height = 20
-  # mid_width = 80
-  # mid_y = int((num_rows - mid_height - box_height) / 2)
-  # mid_x = int((num_cols - mid_width) / 2)
-  # center_window = curses.newwin(mid_height, mid_width, mid_y, mid_x)
-  # center_window.bkgd('.')
-
-
-  # center_window.refresh()
-
-
-
-
-
-
-
-
-  # Initialize color in a separate step
 
 
 if __name__ == '__main__':    

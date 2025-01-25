@@ -70,7 +70,10 @@ TODO:
 
 [Bug](https://ascii.co.uk/art/bug)
 ```
-
+       / .'
+ .---. \/
+(._.' \()
+ ^"""^"
 ```
 
 [Spider](https://ascii.co.uk/art/bug)
@@ -85,7 +88,7 @@ TODO:
                `'        
 ```
 
-[Tree ?](https://ascii.co.uk/art/garden)
+[Tree](https://ascii.co.uk/art/garden)
 ```
             ********         
         ****************     
@@ -100,7 +103,7 @@ TODO:
     ,,,,,,,,,//||||\,,,,,,,,,
 ```
 
-[Fruit](https://ascii.co.uk/art/fruit)
+[Fruits](https://ascii.co.uk/art/fruit)
 ```
 Apple:
 
