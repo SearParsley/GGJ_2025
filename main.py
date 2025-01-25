@@ -59,46 +59,43 @@ def grow(text_path=Text_Path):
 
 def title_screen(stdscr=curses.window):
 
-  # set things up
-  curses.curs_set(0)
-  stdscr.nodelay(True)
   stdscr.clear()
-  stdscr = curses.initscr()
-  palette.init_colors()
 
   num_rows, num_cols = stdscr.getmaxyx()
   middle_row = int(num_rows / 2)
+  middle_column = int(num_cols / 2)
 
-  # strings and such
+  title_window = curses.newwin(num_rows, num_cols, 0, 0)
 
+  title = Text_Image('ASCII/temp.txt', title_window, curses.color_pair(16))
+  title_x = middle_column - int(title.get_width() / 2)
+  title_y = middle_row - int(title.get_height() / 2)
+
+  # instructions_text = "Press any button to start"
+  # instructions_x = middle_column - int(len(instructions_text) / 2)
+  # instructions_y = middle_row
+  title_window.clear()
+
+  # draw title stuff
+  title.draw(0, 0)
+  # stdscr.addstr(instructions_y, instructions_x, instructions_text, curses.color_pair(16) | curses.A_BLINK)
+
+  title_window.refresh()
   while True:
-    stdscr.clear()
-
-    # draw title
-
-
-    # draw instructions
-
-
-
-    stdscr.refresh()
-
     # wait for input
     key = stdscr.getch()
     if key != -1: break
 
-
 def game_loop(stdscr=curses.window):
 
   curses.curs_set(0)
-
-  title_screen(stdscr)
-
-  # set things up
-  stdscr.nodelay(True)
-  stdscr.clear()
   stdscr = curses.initscr()
   palette.init_colors()
+  stdscr.nodelay(True)
+
+  # title_screen(stdscr)
+
+  stdscr.clear()
 
   num_rows, num_cols = stdscr.getmaxyx()
   middle_row = int(num_rows / 2)
@@ -119,35 +116,6 @@ def game_loop(stdscr=curses.window):
   )
 
   text_path = Text_Path(dialogue_tree)
-
-
-
-  ''' 
-  pest_window = curses.newwin(num_rows, num_cols-box_height-1, 0, 0)
-
-  # bug!
-  ascii_bug = Text_Image('ASCII/bug.txt', pest_window, curses.color_pair(17))
-  bug_x = 16
-  bug_y = 4
-  ascii_bug.draw(bug_x, bug_y)
-
-  # spider!
-  ascii_spider = Text_Image('ASCII/spider.txt', pest_window, curses.color_pair(18))
-  spider_x = 8
-  spider_y = 2
-  ascii_spider.draw(spider_x, spider_y)
-
-  def show_pests():
-    ascii_bug.show()
-    ascii_spider.show()
-
-  dialogue_tree = [
-    ("Welcome to the dialogue tree!", [
-      ("Show me the bug", show_pests),
-    ]),
-  ]
-  '''
-
 
   # Display current text and options
   current_text = text_path.get_current_text()
@@ -176,7 +144,12 @@ def game_loop(stdscr=curses.window):
 
         # Handle specific key presses
         if key_state == ord('q'):  # Quit the game
-          break
+          # player death
+          current_text = "No further actions are available. Whether it be age or decay, your life has met its end. Game Over."
+          options = [("Exit Game", exit, None)]
+          text_path.set_current_text(current_text)
+          text_path.set_options(options)
+          text_box.draw_box(current_text, options)
 
         elif key_state in range(ord('1'), ord('1') + len(options)):
           # Choose the option based on user input
@@ -198,14 +171,6 @@ def game_loop(stdscr=curses.window):
 
     time.sleep(0.01)  # Small delay to reduce CPU usage
 
-  # player death
-  text_path.set_current_text("No further actions are available. Whether it be age or decay, your life has met its end. Game Over.")
-  text_path.set_options([("Exit Game", exit, None)])
-
-  current_text = text_path.get_current_text()
-  options = text_path.get_options()
-
-  text_box.draw_box(current_text, options)
 
 
 

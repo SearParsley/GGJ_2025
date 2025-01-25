@@ -2,9 +2,9 @@ import curses
 
 
 colors = [
-  180, # light brown
-  250, # light gray
-  240, # dark gray
+  180, # light brown : 16
+  250, #  light gray : 17
+  240, #   dark gray : 18
 ]
 
 def init_colors():
