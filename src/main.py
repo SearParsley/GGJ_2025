@@ -9,82 +9,96 @@ import palette
 
 
 
-
-
-
 def get_lucky(game_state):
   """Get a lucky integer between 0 to 100"""
-  return random.randrange(70) + game_state.get_luck()
+  return min(random.randrange(70) + (random.random() * game_state.get_luck()), 100)
 
+
+def fire(game_state):
+  text_path.set_current_text("text prompt")
+  text_path.set_options([
+    ("option 1", pass_time, None),
+    ("option 2", pass_time, None),
+  ])
+
+def lumberjack(game_state):
+  text_path.set_current_text("text prompt")
+  text_path.set_options([
+    ("option 1", pass_time, None),
+    ("option 2", pass_time, None),
+  ])
+
+def storm(game_state):
+  text_path.set_current_text("text prompt")
+  text_path.set_options([
+    ("option 1", pass_time, None),
+    ("option 2", pass_time, None),
+  ])
+
+def woodpecker(game_state):
+  text_path.set_current_text("text prompt")
+  text_path.set_options([
+    ("option 1", pass_time, None),
+    ("option 2", pass_time, None),
+  ])
+
+def snow(game_state):
+  text_path.set_current_text("text prompt")
+  text_path.set_options([
+    ("option 1", pass_time, None),
+    ("option 2", pass_time, None),
+  ])
+
+def uneventful(game_state):
+  text_path.set_current_text("text prompt")
+  text_path.set_options([
+    ("option 1", pass_time, None),
+    ("option 2", pass_time, None),
+  ])
+
+def bird(game_state):
+  text_path.set_current_text("text prompt")
+  text_path.set_options([
+    ("option 1", pass_time, None),
+    ("option 2", pass_time, None),
+  ])
+
+def rain(game_state):
+  text_path.set_current_text("text prompt")
+  text_path.set_options([
+    ("option 1", pass_time, None),
+    ("option 2", pass_time, None),
+  ])
+
+def friend(game_state):
+  text_path.set_current_text("text prompt")
+  text_path.set_options([
+    ("option 1", pass_time, None),
+    ("option 2", pass_time, None),
+  ])
+
+def sun(game_state):
+  text_path.set_current_text("text prompt")
+  text_path.set_options([
+    ("option 1", pass_time, None),
+    ("option 2", pass_time, None),
+  ])
 
 
 def pass_time(game_state):
   """Action for passing time surroundings"""
   chance = get_lucky(game_state)
 
-  if chance <= 10:
-    # lumberjack
-    text_path.set_current_text("lumberjack") # TODO: lumberjack dialogue
-    text_path.set_options([
-      ("lumberjack", pass_time, None),
-      ("lumberjack", pass_time, None),
-    ])
-  elif chance <= 20:
-    # mushrooms start growing
-    text_path.set_current_text("mushrooms") # TODO: mushrooms dialogue
-    text_path.set_options([
-      ("mushrooms", pass_time, None),
-      ("mushrooms", pass_time, None),
-    ])
-  elif chance <= 30:
-    # attract a woodpecker
-    text_path.set_current_text("woodpecker") # TODO: woodpecker dialogue
-    text_path.set_options([
-      ("woodpecker", pass_time, "Sap"),
-      ("woodpecker", pass_time, None),
-    ])
-  elif chance <= 40:
-    # nothing eventful happens
-    text_path.set_current_text("friend") # TODO: nothing dialogue
-    text_path.set_options([
-      ("Take time to photosynthesize", pass_time, "Flower"),
-      ("friend", pass_time, None),
-    ])
-  elif chance <= 50:
-    # x
-    text_path.set_current_text("friend") # TODO: x dialogue
-    text_path.set_options([
-      ("friend", pass_time, "Flower"),
-      ("friend", pass_time, None),
-    ])
-  elif chance <= 60:
-    # attract a friend
-    text_path.set_current_text("x") # TODO: friend dialogue
-    text_path.set_options([
-      ("x", pass_time, "Flower"),
-      ("x", pass_time, None),
-    ])
-  elif chance <= 70:
-    # x
-    text_path.set_current_text("x") # TODO: x dialogue
-    text_path.set_options([
-      ("x", pass_time, "Flower"),
-      ("x", pass_time, None),
-    ])
-  elif chance <= 80:
-    # x
-    text_path.set_current_text("x") # TODO: x dialogue
-    text_path.set_options([
-      ("x", pass_time, "Flower"),
-      ("x", pass_time, None),
-    ])
-  else:
-    # bountiful rain
-    text_path.set_current_text("rain") # TODO: rain dialogue
-    text_path.set_options([
-      ("rain", pass_time, None),
-      ("rain", pass_time, None),
-    ])
+  if    chance <= 10: fire(game_state)
+  elif  chance <= 20: lumberjack(game_state)
+  elif  chance <= 30: storm(game_state)
+  elif  chance <= 40: woodpecker(game_state)
+  elif  chance <= 50: snow(game_state)
+  elif  chance <= 60: uneventful(game_state)
+  elif  chance <= 70: bird(game_state)
+  elif  chance <= 80: rain(game_state)
+  elif  chance <= 90: friend(game_state)
+  elif chance <= 100: sun(game_state)
 
 
 
