@@ -59,8 +59,6 @@ def grow(text_path=Text_Path):
 
 def title_screen(stdscr=curses.window):
 
-  stdscr.clear()
-
   num_rows, num_cols = stdscr.getmaxyx()
   middle_row = int(num_rows / 2)
   middle_column = int(num_cols / 2)
@@ -86,16 +84,24 @@ def title_screen(stdscr=curses.window):
     key = stdscr.getch()
     if key != -1: break
 
+    time.sleep(0.01)  # Small delay to reduce CPU usage
+
+
+
 def game_loop(stdscr=curses.window):
 
   curses.curs_set(0)
+
+  # set things up
+  stdscr.nodelay(True)
+  stdscr.clear()
   stdscr = curses.initscr()
   palette.init_colors()
   stdscr.nodelay(True)
 
-  # title_screen(stdscr)
-
   stdscr.clear()
+
+  title_screen(stdscr)
 
   num_rows, num_cols = stdscr.getmaxyx()
   middle_row = int(num_rows / 2)
