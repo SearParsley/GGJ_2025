@@ -2,6 +2,7 @@ class Game_State:
   def __init__(self):
     self.health = 100
     self.height = 1
+    self.luck = 50
     self.resources = []
 
   def get_height(self):
@@ -15,6 +16,12 @@ class Game_State:
 
   def set_health(self, new_health):
     self.health = new_health
+
+  def get_luck(self):
+    return self.luck
+
+  def set_luck(self, new_luck):
+    self.luck = min(new_luck, 100)
 
   def add_item(self, item):
     """Add an item to the player's resources."""

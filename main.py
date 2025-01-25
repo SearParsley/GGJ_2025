@@ -1,69 +1,97 @@
 import curses
 import time
+import random
 from TextBox import Text_Box
 from TextPath import Text_Path
 from TextImage import Text_Image
 from GameState import Game_State
 import palette
 
+
+
 game_state = Game_State()
 
-def observe(text_path=Text_Path):
+
+
+
+def get_lucky():
+  """Get an integer from 0 to luck value"""
+  return random.randrange(game_state.get_luck())
+
+
+
+def observe():
   """Action for observing surroundings"""
-  if game_state.get_health() <= 50:
-    # leaves fall out
-    text_path.set_current_text("") # TODO: low health dialogue
+  
+  chance = get_lucky()
+
+  if chance <= 10:
+    # lumberjack
+    text_path.set_current_text("lumberjack") # TODO: lumberjack dialogue
     text_path.set_options([
-      ("", exit, None),
-      ("", exit, None),
+      ("lumberjack", observe, None),
+      ("lumberjack", observe, None),
     ])
-  elif game_state.has_item("Flower"):
-    # attract an animal
-    text_path.set_current_text("") # TODO: flower dialogue
+  elif chance <= 25:
+    # mushrooms start growing
+    text_path.set_current_text("mushrooms") # TODO: mushrooms dialogue
     text_path.set_options([
-      ("", exit, None),
-      ("", exit, None),
+      ("mushrooms", observe, None),
+      ("mushrooms", observe, None),
     ])
-  elif game_state.has_item("Bark"):
-    # woodpecker
-    text_path.set_current_text("") # TODO: bark dialogue
+  elif chance <= 40:
+    # attract a woodpecker
+    text_path.set_current_text("woodpecker") # TODO: woodpecker dialogue
     text_path.set_options([
-      ("", exit, None),
-      ("", exit, None),
+      ("woodpecker", observe, "Sap"),
+      ("woodpecker", observe, None),
+    ])
+  elif chance <= 65:
+    # attract a friend
+    text_path.set_current_text("friend") # TODO: friend dialogue
+    text_path.set_options([
+      ("friend", observe, "Flower"),
+      ("friend", observe, None),
+    ])
+  else:
+    # bountiful rain
+    text_path.set_current_text("rain") # TODO: rain dialogue
+    text_path.set_options([
+      ("rain", observe, None),
+      ("rain", observe, None),
     ])
 
-def grow(text_path=Text_Path):
+
+
+def grow():
   """Action for growth"""
-  if game_state.get_health() <= 50:
-    # leaves fall out
-    text_path.set_current_text("") # TODO: low health dialogue
-    text_path.set_options([
-      ("", exit, None),
-      ("", exit, None),
-    ])
-  elif game_state.has_item("Moss"):
-    # heal some health
-    text_path.set_current_text("") # TODO: flower dialogue
-    text_path.set_options([
-      ("", exit, None),
-      ("", exit, None),
-    ])
-  elif game_state.has_item("Bark"):
-    # woodpecker
-    text_path.set_current_text("") # TODO: bark dialogue
-    text_path.set_options([
-      ("", exit, None),
-      ("", exit, None),
-    ])
+  text_path.set_current_text("testing")
+  text_path.set_options([
+    ("observe", observe, None),
+    ("grow again", grow, None),
+  ])
 
-def player_death(text_path=Text_Path, text_box=Text_Box):
-  current_text = "No further actions are available. Whether it be age or decay, your life has met its end. Game Over."
+
+
+def player_death(text_path, text_box):
+  current_text = "No further actions are available. By age or decay, your life has met its end. Game Over."
   options = [("Exit Game", exit, None)]
   text_path.set_current_text(current_text)
   text_path.set_options(options)
   new_options = text_path.get_options()
   text_box.draw_box(current_text, new_options)
+  
 
+
+dialogue_tree = (
+  f"Standing at a modest height of {game_state.get_height()}, ",
+  [
+    ("Observe your suroundings", observe, None),
+    ("Attend to growth", grow, None),
+  ],
+)
+
+text_path = Text_Path(dialogue_tree)
 
 
 
@@ -75,7 +103,6 @@ def game_loop(stdscr=curses.window):
   stdscr = curses.initscr()
   stdscr.clear()
   palette.init_colors()
-
 
 
 
@@ -139,16 +166,6 @@ def game_loop(stdscr=curses.window):
   box_x = 2
   text_box = Text_Box(box_height, box_width, box_y, box_x)
 
-  dialogue_tree = (
-    f"Standing at a modest height of {game_state.get_height()}, ",
-    [
-      ("Observe your suroundings", observe, None),
-      ("Attend to growth", grow, None),
-    ],
-  )
-
-  text_path = Text_Path(dialogue_tree)
-
   # Display current text and options
   current_text = text_path.get_current_text()
   options = text_path.get_options()
@@ -164,7 +181,9 @@ def game_loop(stdscr=curses.window):
 
 
 
-
+  '''
+  Dialogue loop
+  '''
 
   in_dialogue = True
 
@@ -182,7 +201,7 @@ def game_loop(stdscr=curses.window):
 
         # Handle specific key presses
         if key_state == ord('q'):  # Quit the game
-          player_death(text_path, text_box)
+          break
 
         elif key_state in range(ord('1'), ord('1') + len(options)):
           # Choose the option based on user input
@@ -203,7 +222,6 @@ def game_loop(stdscr=curses.window):
       key_pressed = False
 
     time.sleep(0.01)  # Small delay to reduce CPU usage
-
 
 
 
