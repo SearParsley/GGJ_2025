@@ -87,7 +87,7 @@ def game_loop(stdscr=curses.window):
   middle_row = int(num_rows / 2)
   middle_column = int(num_cols / 2)
 
-  title = Text_Image('ASCII/temp.txt', stdscr, curses.color_pair(16))
+  title = Text_Image('ASCII/title.txt', stdscr, curses.color_pair(16)) # TODO: title text color
   title_x = middle_column - int(title.get_width() / 2) + 4
   title_y = middle_row - int(title.get_height() * 1) + 2
 
@@ -95,13 +95,13 @@ def game_loop(stdscr=curses.window):
   instructions_x = middle_column - int(len(instructions_text) / 2) - 2
   instructions_y = middle_row + 4
 
-  ascii_bug = Text_Image('ASCII/bug.txt', stdscr, curses.color_pair(17))
+  ascii_bug = Text_Image('ASCII/bug.txt', stdscr, curses.color_pair(17)) # TODO: bug color
   bug_x = 76
   bug_y = 15
 
   # draw title stuff
   title.draw(title_x, title_y)
-  stdscr.addstr(instructions_y, instructions_x, instructions_text, curses.color_pair(16) | curses.A_BLINK)
+  stdscr.addstr(instructions_y, instructions_x, instructions_text, curses.color_pair(16) | curses.A_BLINK) # TODO: instructions text color
   ascii_bug.draw(bug_x, bug_y)
 
   stdscr.refresh()
