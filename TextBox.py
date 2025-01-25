@@ -1,17 +1,18 @@
 import curses
 
 class Text_Box:
-  def __init__(self, height=int, width=int, start_y=int, start_x=int):
+  def __init__(self, height=5, width=60, start_y=10, start_x=1):
     self.height = height  # Height of the box
     self.width = width  # Width of the box
     self.start_y = start_y  # Starting y position (row)
     self.start_x = start_x  # Starting x position (column)
 
-    # Correct order of arguments for newwin: height, width, start_y, start_x
     self.window = curses.newwin(height, width, start_y, start_x)
 
   def wrap_text(self, text):
     """Wrap the text to fit within the box width."""
+    if not isinstance(text, str): text = str(text)
+
     wrapped_lines = []
     max_line_length = self.width - 2  # Subtract 2 for the box borders
 
@@ -29,6 +30,8 @@ class Text_Box:
     self.window.attron(curses.color_pair(16))
     self.window.box()
     self.window.attroff(curses.color_pair(16))
+
+    if not isinstance(text, str): text = str(text)
 
     # Wrap and display the main text
     wrapped_text = self.wrap_text(text)

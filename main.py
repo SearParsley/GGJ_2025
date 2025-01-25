@@ -3,19 +3,69 @@ import time
 from TextBox import Text_Box
 from TextPath import Text_Path
 from TextImage import Text_Image
+from GameState import Game_State
 import palette
+
+game_state = Game_State()
+
+def observe(text_path=Text_Path):
+  """Action for observing surroundings"""
+  if game_state.get_health() <= 50:
+    # leaves fall out
+    text_path.set_current_text("") # TODO: low health dialogue
+    text_path.set_options([
+      ("", exit, None),
+      ("", exit, None),
+    ])
+  elif game_state.has_item("Flower"):
+    # attract an animal
+    text_path.set_current_text("") # TODO: flower dialogue
+    text_path.set_options([
+      ("", exit, None),
+      ("", exit, None),
+    ])
+  elif game_state.has_item("Bark"):
+    # woodpecker
+    text_path.set_current_text("") # TODO: bark dialogue
+    text_path.set_options([
+      ("", exit, None),
+      ("", exit, None),
+    ])
+
+def grow(text_path=Text_Path):
+  """Action for growth"""
+  if game_state.get_health() <= 50:
+    # leaves fall out
+    text_path.set_current_text("") # TODO: low health dialogue
+    text_path.set_options([
+      ("", exit, None),
+      ("", exit, None),
+    ])
+  elif game_state.has_item("Moss"):
+    # heal some health
+    text_path.set_current_text("") # TODO: flower dialogue
+    text_path.set_options([
+      ("", exit, None),
+      ("", exit, None),
+    ])
+  elif game_state.has_item("Bark"):
+    # woodpecker
+    text_path.set_current_text("") # TODO: bark dialogue
+    text_path.set_options([
+      ("", exit, None),
+      ("", exit, None),
+    ])
 
 
 
 
 def game_loop(stdscr=curses.window):
+
+  # set things up
   curses.curs_set(0)
   stdscr.nodelay(True)
   stdscr.clear()
-
-  # master window
   stdscr = curses.initscr()
-
   palette.init_colors()
 
   num_rows, num_cols = stdscr.getmaxyx()
@@ -28,6 +78,19 @@ def game_loop(stdscr=curses.window):
   box_x = 2
   text_box = Text_Box(box_height, box_width, box_y, box_x)
 
+  dialogue_tree = (
+    f"Standing at a modest height of {game_state.get_height()}, ",
+    [
+      ("Observe your suroundings", observe, None),
+      ("Attend to growth", grow, None),
+    ],
+  )
+
+  text_path = Text_Path(dialogue_tree)
+
+
+
+  ''' 
   pest_window = curses.newwin(num_rows, num_cols-box_height-1, 0, 0)
 
   # bug!
@@ -51,11 +114,7 @@ def game_loop(stdscr=curses.window):
       ("Show me the bug", show_pests),
     ]),
   ]
-
-
-
-
-  text_path = Text_Path(dialogue_tree)
+  '''
 
 
   # Display current text and options
@@ -95,9 +154,11 @@ def game_loop(stdscr=curses.window):
           # Update current text and options
           current_text = text_path.get_current_text()
           options = text_path.get_options()
+
+          # Draw text box with current text and available options
           text_box.draw_box(current_text, options)
 
-          if len(text_path.get_options) == 0: in_dialogue = False
+          if len(text_path.get_options()) == 0: in_dialogue = False
 
     # Reset key state if no key is pressed for a short period
     if current_time - last_key_time > 0.2:  # 200ms debounce period
@@ -105,6 +166,14 @@ def game_loop(stdscr=curses.window):
 
     time.sleep(0.01)  # Small delay to reduce CPU usage
 
+  # player death
+  text_path.set_current_text("No further actions are available. Whether it be age or decay, your life has met its end. Game Over.")
+  text_path.set_options([("Exit Game", exit, None)])
+
+  current_text = text_path.get_current_text()
+  options = text_path.get_options()
+
+  text_box.draw_box(current_text, options)
 
 
 
