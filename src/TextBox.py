@@ -1,7 +1,7 @@
 import curses
 
 class Text_Box:
-  def __init__(self, height=5, width=60, start_y=10, start_x=1):
+  def __init__(self, height:int, width:int, start_y:int, start_x:int):
     self.height = height  # Height of the box
     self.width = width  # Width of the box
     self.start_y = start_y  # Starting y position (row)
@@ -9,7 +9,7 @@ class Text_Box:
 
     self.window = curses.newwin(height, width, start_y, start_x)
 
-  def wrap_text(self, text):
+  def wrap_text(self, text:str):
     """Wrap the text to fit within the box width."""
     if not isinstance(text, str): text = str(text)
 
@@ -24,7 +24,7 @@ class Text_Box:
     wrapped_lines.append(text)
     return wrapped_lines
 
-  def draw_box(self, text, options):
+  def draw_box(self, text:str, options:list):
     """Draw the box and display the text with options."""
     self.window.clear()
     self.window.attron(curses.color_pair(16))

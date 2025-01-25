@@ -1,4 +1,5 @@
 import curses
+from GameState import Game_State
 
 '''
 dialogue: text=str, [
@@ -10,7 +11,7 @@ dialogue: text=str, [
 
 class Text_Path:
   """Manages a dialogue tree with branching paths."""
-  def __init__(self, dialogue=tuple):
+  def __init__(self, dialogue:tuple):
     """
     Initialize the Text_Path with a dialogue tree.
     """
@@ -22,7 +23,7 @@ class Text_Path:
     """Get the text of the current dialogue node."""
     return self.current_text
 
-  def set_current_text(self, new_current_text):
+  def set_current_text(self, new_current_text:str):
     """Set the text of the current dialogue node."""
     self.current_text = new_current_text
 
@@ -37,11 +38,11 @@ class Text_Path:
         available_options.append((option_text, action))
     return available_options
 
-  def set_options(self, new_options):
+  def set_options(self, new_options:list):
     """Set the text of the current dialogue node."""
     self.options = new_options
 
-  def choose_option(self, option_index, game_state):
+  def choose_option(self, option_index:int, game_state:Game_State):
     """Choose a dialogue option and execute the action."""
     action = self.options[option_index][1]
     action(game_state)
