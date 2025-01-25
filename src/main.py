@@ -9,9 +9,17 @@ import palette
 
 
 
+def exit_game(game_state:Game_State):
+  """Clean up curses and exit the game."""
+  curses.endwin()  # Clean up curses
+  exit()       # Exit the program
+
+
+
+
 def get_lucky(game_state:Game_State):
   """Get a lucky integer between 0 to 100"""
-  return min(random.randrange(70) + (random.random() * game_state.get_luck()), 100)
+  return min(random.randrange(50) + (random.random() * game_state.get_luck()), 100)
 
 
 
@@ -30,10 +38,38 @@ def fire(game_state:Game_State):
   ascii_fire.draw(fire_x, fire_y)
   game_state.window.refresh()
 
-  text_path.set_current_text("A blazing flame tears through the nearby brush") # TODO: fire
+  text_path.set_current_text("A blazing flame tears through the nearby brush, and it begins to leap towards you.")
   text_path.set_options([
-    ("Sacrifice outer layer of bark", pass_time, "Bark"),
+    ("Succumb to the inferno", burn, None),
+    ("Prevent major damage by releasing extra hydration", sacrifice_hydration, game_state.has_resource("Hydration")),
+    ("Protect yourself with your hardened barkskin", sacrifice_bark, game_state.has_resource("Bark")),
+  ])
+
+def sacrifice_bark(game_state:Game_State):
+  game_state.remove_resource("Bark")
+  game_state.set_luck(game_state.get_luck() + 10)
+  text_path.set_current_text("The fire burns through your sturdy bark, reducing it to ash, but the rest of you remains intact.")
+  text_path.set_options([
+    ("Continue with determination", pass_time, None),
+  ])
+
+def sacrifice_hydration(game_state:Game_State):
+  game_state.remove_resource("Hydration")
+  text_path.set_current_text("The fire steams against your damp bark. You're not as hydrated, but nothing seems to have been damaged.")
+  text_path.set_options([
+    ("Do some photosynthesizing", pass_time, None),
+  ])
+
+def burn(game_state:Game_State):
+  for res in ["Acorn", "Moss", "Bark", "Nest"]:
+    game_state.remove_resource(res)
+  
+  game_state.set_health(game_state.get_health() - 50)
+
+  text_path.set_current_text("The fire has harmed you gravely. All flammable resources have been burned away.")
+  text_path.set_options([
     ("Do nothing", pass_time, None),
+    ("Recover what energy you can", recover, None),
   ])
 
 def lumberjack(game_state:Game_State):
@@ -64,8 +100,8 @@ def snow(game_state:Game_State):
     ("option 2", pass_time, None),
   ])
 
-def uneventful(game_state:Game_State):
-  text_path.set_current_text("uneventful prompt") # TODO: uneventful
+def spider(game_state:Game_State):
+  text_path.set_current_text("spider prompt") # TODO: spider
   text_path.set_options([
     ("option 1", pass_time, None),
     ("option 2", pass_time, None),
@@ -100,27 +136,81 @@ def sun(game_state:Game_State):
   ])
 
 
+
+def check_life(game_state:Game_State):
+  if game_state.get_health() <= 0: death(game_state)
+
+
+
+
+
+# List of (luck threshold, function, cooldown) tuples
+events = [
+  (10, fire, 3),
+  (20, lumberjack, 2),
+  (30, storm, 3),
+  (40, woodpecker, 2),
+  (50, snow, 3),
+  (60, spider, 2),
+  (70, bird, 1),
+  (80, rain, 3),
+  (90, friend, 3),
+  (100, sun, 1),
+]
+
+event_history = []
+
+def can_trigger_event(event_name, cooldown):
+  """
+  Check if an event can be triggered based on its cooldown.
+  """
+  # Count the total number of events that have occurred
+  total_events = len(event_history)
+
+  # Get the last occurrence of the given event
+  last_occurrence = next(
+    (total_events - i - 1 for i, name in enumerate(reversed(event_history)) if name == event_name),
+    None,
+  )
+
+  # If the event has never occurred, it can be triggered
+  if last_occurrence is None:
+    return True
+
+  # Check if enough other events have occurred since the last occurrence
+  return total_events - last_occurrence > cooldown
+
+
+
 def pass_time(game_state:Game_State):
-  """Action for passing time surroundings"""
+  """Action for passing time"""
+  check_life(game_state)
+
+
   chance = get_lucky(game_state)
 
-  fire(game_state)
+  # Iterate over the list to find the matching event
+  for threshold, event, cooldown in events:
+    event_name = event.__name__  # Use the function's name as the event identifier
 
-  if    chance <= 10: fire(game_state)
-  elif  chance <= 20: lumberjack(game_state)
-  elif  chance <= 30: storm(game_state)
-  elif  chance <= 40: woodpecker(game_state)
-  elif  chance <= 50: snow(game_state)
-  elif  chance <= 60: uneventful(game_state)
-  elif  chance <= 70: bird(game_state)
-  elif  chance <= 80: rain(game_state)
-  elif  chance <= 90: friend(game_state)
-  elif  chance <= 100: sun(game_state)
+    if chance <= threshold and can_trigger_event(event_name, cooldown):
+      event(game_state)  # Trigger the event
+      event_history.append(event_name)  # Add to event history
+      break  # Stop checking once a match is found
+
+
+
+def recover(game_state:Game_State):
+  check_life(game_state)
+
+  pass_time(game_state)
 
 
 
 def grow(game_state:Game_State):
   """Action for growth"""
+  check_life(game_state)
+
   text_path.set_current_text("testing")
   text_path.set_options([
     ("pass time", pass_time, None),
@@ -129,20 +219,30 @@ def grow(game_state:Game_State):
 
 
 
-def player_death(text_path:Text_Path, text_box:Text_Box):
-  current_text = "No further actions are available. By age or decay, your life has met its end. Game Over."
-  options = [("Exit Game", exit, None)]
-  text_path.set_current_text(current_text)
-  text_path.set_options(options)
-  new_options = text_path.get_options()
-  text_box.draw_box(current_text, new_options)
+def death(game_state:Game_State):
+  text_path.set_current_text("No further actions are available. By age or decay, your life has met its end. Game Over.")
+  text_path.set_options([
+    ("Exit Game", exit_game, None),
+  ])
   
+
+
+'''
+Bark - one-time against fire, 
+Moss - one-time against snow, grows after rain
+Fruit - animals
+Flower - bugs
+Nest - protection against lumberjack
+Hydration - protection against fire, bad in the cold
+Mushroom - protection against animals
+'''
+
 
 
 initial_dialogue = (
   "You are a lone tree. Winter is approaching. Do what you must to survive.",
   [
-    ("Stand tall against the sands of time", pass_time, None),
+    ("Stand tall against the sands of time", fire, None),
     # ("Attend to growth", grow, None),
   ],
 )
@@ -260,7 +360,7 @@ def game_loop(stdscr:curses.window):
         # Handle specific key presses
         if key_state == ord('q'):  # Quit the game
           break
-
+        
         elif key_state in range(ord('1'), ord('1') + len(options)):
           # Choose the option based on user input
           option_index = key_state - ord('1')

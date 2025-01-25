@@ -44,5 +44,6 @@ class Text_Path:
 
   def choose_option(self, option_index:int, game_state:Game_State):
     """Choose a dialogue option and execute the action."""
-    action = self.options[option_index][1]
+    available_options = self.get_options()
+    option_text, action = available_options[option_index]
     action(game_state)

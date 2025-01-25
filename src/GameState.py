@@ -5,7 +5,9 @@ class Game_State:
     self.window = window
     self.health = 100
     self.luck = 0
-    self.resources = []
+    self.resources = [
+      "Bark",
+    ]
     self.num_rows, self.num_cols = window.getmaxyx()
 
 
@@ -27,33 +29,21 @@ class Game_State:
   def set_luck(self, new_luck:int):
     self.luck = min(new_luck, 30)
 
-  def add_item(self, item:str):
-    """Add an item to the player's resources."""
-    self.resources.append(item)
+  def add_resource(self, resource:str):
+    """Add a resource to the player."""
+    self.resources.append(resource)
 
-  def remove_item(self, item:str):
-    """Remove an item from the player's resources."""
-    if item in self.resources:
-      self.resources.remove(item)
+  def remove_resource(self, resource:str):
+    """Remove a resource from the player."""
+    if resource in self.resources:
+      self.resources.remove(resource)
 
-  def has_item(self, item:str):
-    """Check if the player's resources contains a specific item."""
-    return item in self.resources
-
-
+  def has_resource(self, resource:str):
+    """Check if the player has access to a specific resource."""
+    return resource in self.resources
 
 
 
 
-'''
-resources:
-moss - heal over time
-fruit - offering to others
-flowers - attract others
-bark - reduce damage taken
-nest - birds
 
 
-
-
-'''
