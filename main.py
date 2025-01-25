@@ -15,50 +15,77 @@ game_state = Game_State()
 
 
 def get_lucky():
-  """Get an integer from 0 to luck value"""
-  return random.randrange(game_state.get_luck())
+  """Get a lucky integer between 0 to 100"""
+  return random.randrange(70) + game_state.get_luck()
 
 
 
-def observe():
-  """Action for observing surroundings"""
-  
+def pass_time():
+  """Action for passing time surroundings"""
   chance = get_lucky()
 
   if chance <= 10:
     # lumberjack
     text_path.set_current_text("lumberjack") # TODO: lumberjack dialogue
     text_path.set_options([
-      ("lumberjack", observe, None),
-      ("lumberjack", observe, None),
+      ("lumberjack", pass_time, None),
+      ("lumberjack", pass_time, None),
     ])
-  elif chance <= 25:
+  elif chance <= 20:
     # mushrooms start growing
     text_path.set_current_text("mushrooms") # TODO: mushrooms dialogue
     text_path.set_options([
-      ("mushrooms", observe, None),
-      ("mushrooms", observe, None),
+      ("mushrooms", pass_time, None),
+      ("mushrooms", pass_time, None),
     ])
-  elif chance <= 40:
+  elif chance <= 30:
     # attract a woodpecker
     text_path.set_current_text("woodpecker") # TODO: woodpecker dialogue
     text_path.set_options([
-      ("woodpecker", observe, "Sap"),
-      ("woodpecker", observe, None),
+      ("woodpecker", pass_time, "Sap"),
+      ("woodpecker", pass_time, None),
     ])
-  elif chance <= 65:
-    # attract a friend
-    text_path.set_current_text("friend") # TODO: friend dialogue
+  elif chance <= 40:
+    # nothing eventful happens
+    text_path.set_current_text("friend") # TODO: nothing dialogue
     text_path.set_options([
-      ("friend", observe, "Flower"),
-      ("friend", observe, None),
+      ("Take time to photosynthesize", pass_time, "Flower"),
+      ("friend", pass_time, None),
+    ])
+  elif chance <= 50:
+    # x
+    text_path.set_current_text("friend") # TODO: x dialogue
+    text_path.set_options([
+      ("friend", pass_time, "Flower"),
+      ("friend", pass_time, None),
+    ])
+  elif chance <= 60:
+    # attract a friend
+    text_path.set_current_text("x") # TODO: friend dialogue
+    text_path.set_options([
+      ("x", pass_time, "Flower"),
+      ("x", pass_time, None),
+    ])
+  elif chance <= 70:
+    # x
+    text_path.set_current_text("x") # TODO: x dialogue
+    text_path.set_options([
+      ("x", pass_time, "Flower"),
+      ("x", pass_time, None),
+    ])
+  elif chance <= 80:
+    # x
+    text_path.set_current_text("x") # TODO: x dialogue
+    text_path.set_options([
+      ("x", pass_time, "Flower"),
+      ("x", pass_time, None),
     ])
   else:
     # bountiful rain
     text_path.set_current_text("rain") # TODO: rain dialogue
     text_path.set_options([
-      ("rain", observe, None),
-      ("rain", observe, None),
+      ("rain", pass_time, None),
+      ("rain", pass_time, None),
     ])
 
 
@@ -67,7 +94,7 @@ def grow():
   """Action for growth"""
   text_path.set_current_text("testing")
   text_path.set_options([
-    ("observe", observe, None),
+    ("pass time", pass_time, None),
     ("grow again", grow, None),
   ])
 
