@@ -15,6 +15,3 @@ class Text_Image:
 
   def show(self):
     self.window.refresh()
-
-  def clear(self):
-    self.window.clear()
