@@ -16,10 +16,9 @@ def exit_game(game_state:Game_State):
 
 
 
-
 def get_lucky(game_state:Game_State):
   """Get a lucky integer between 0 to 100"""
-  return min(random.randrange(50) + (random.random() * game_state.get_luck()), 100)
+  return min(random.randrange(50) + (random.random() * game_state.get_luck() * 2), 100)
 
 
 
@@ -36,18 +35,19 @@ def fire(game_state:Game_State):
   ascii_fire = Text_Image('./ASCII/fire.txt', game_state.window, curses.color_pair(21))
   fire_x, fire_y = bg_center(ascii_fire, game_state)
   ascii_fire.draw(fire_x, fire_y)
+
   game_state.window.refresh()
 
   text_path.set_current_text("A blazing flame tears through the nearby brush, and it begins to leap towards you.")
   text_path.set_options([
-    ("Succumb to the inferno", burn, None),
-    ("Prevent major damage by releasing extra hydration", sacrifice_hydration, game_state.has_resource("Hydration")),
     ("Protect yourself with your hardened barkskin", sacrifice_bark, game_state.has_resource("Bark")),
+    ("Prevent major damage by releasing extra hydration", sacrifice_hydration, game_state.has_resource("Hydration")),
+    ("Succumb to the inferno", burn, None),
   ])
 
 def sacrifice_bark(game_state:Game_State):
   game_state.remove_resource("Bark")
-  game_state.set_luck(game_state.get_luck() + 10)
+  game_state.set_luck(game_state.get_luck() + 20)
   text_path.set_current_text("The fire burns through your sturdy bark, reducing it to ash, but the rest of you remains intact.")
   text_path.set_options([
     ("Continue with determination", pass_time, None),
@@ -55,24 +55,26 @@ def sacrifice_bark(game_state:Game_State):
 
 def sacrifice_hydration(game_state:Game_State):
   game_state.remove_resource("Hydration")
+  game_state.set_luck(game_state.get_luck() + 10)
   text_path.set_current_text("The fire steams against your damp bark. You're not as hydrated, but nothing seems to have been damaged.")
   text_path.set_options([
-    ("Do some photosynthesizing", pass_time, None),
+    ("Do some photosynthesizing", increase_luck, None),
   ])
 
 def burn(game_state:Game_State):
   for res in ["Acorn", "Moss", "Bark", "Nest"]:
     game_state.remove_resource(res)
   
-  game_state.set_health(game_state.get_health() - 50)
+  game_state.set_health(game_state.get_health() - 45)
 
   text_path.set_current_text("The fire has harmed you gravely. All flammable resources have been burned away.")
   text_path.set_options([
-    ("Do nothing", pass_time, None),
-    ("Recover what energy you can", recover, None),
+    ("Try to recover what little you can", recover, None),
   ])
 
 def lumberjack(game_state:Game_State):
+  game_state.window.clear()
+
   text_path.set_current_text("lumberjack prompt") # TODO: lumberjack
   text_path.set_options([
     ("option 1", pass_time, None),
@@ -87,11 +89,48 @@ def storm(game_state:Game_State):
   ])
 
 def woodpecker(game_state:Game_State):
-  text_path.set_current_text("woodpecker prompt") # TODO: woodpecker
+  game_state.window.clear()
+
+  ascii_woodpecker = Text_Image('./ASCII/woodpecker.txt', game_state.window, curses.color_pair(17))
+  woodpecker_x, woodpecker_y = bg_center(ascii_woodpecker, game_state)
+  ascii_woodpecker.draw(woodpecker_x-3, woodpecker_y)
+
+  ascii_trunk = Text_Image('./ASCII/trunk.txt', game_state.window, curses.color_pair(22))
+  ascii_trunk.draw(woodpecker_x+3, woodpecker_y)
+
+  game_state.window.refresh()
+
+  text_path.set_current_text("A pesky woodpecker decides you're the perfect perch, and begins hammering into your side.")
   text_path.set_options([
-    ("option 1", pass_time, None),
-    ("option 2", pass_time, None),
+    ("Offer it some grubs", sacrifice_grubs, game_state.has_resource("Grubs")),
+    ("Do nothing", get_pecked, None),
   ])
+
+def sacrifice_grubs(game_state:Game_State):
+  game_state.remove_resource("Grubs")
+
+  game_state.window.clear()
+
+  ascii_woodpecker = Text_Image('./ASCII/woodpecker.txt', game_state.window, curses.color_pair(0))
+  woodpecker_x, woodpecker_y = bg_center(ascii_woodpecker, game_state)
+  ascii_trunk = Text_Image('./ASCII/trunk.txt', game_state.window, curses.color_pair(22))
+  ascii_trunk.draw(woodpecker_x+3, woodpecker_y)
+
+  game_state.window.refresh()
+
+  text_path.set_current_text("The intruder quickly leaves after finding its dinner in your recesses.")
+  text_path.set_options([
+    ("Make some chlorophyll", recover, None),
+    ("Meditate on the nature of stones", increase_luck, None),
+  ])  
+
+def get_pecked(game_state:Game_State):
+  game_state.set_health(game_state.get_health() - 5)
+
+  text_path.set_current_text("It feels anything but pleasant, but not much harm is done.")
+  text_path.set_options([
+    ("Contemplate the seasons", pass_time, None),
+  ])  
 
 def snow(game_state:Game_State):
   text_path.set_current_text("snow prompt") # TODO: snow
@@ -182,6 +221,13 @@ def can_trigger_event(event_name, cooldown):
 
 def pass_time(game_state:Game_State):
   """Action for passing time"""
+
+  game_state.window.clear()
+
+  woodpecker(game_state)
+  return
+
+
   chance = get_lucky(game_state)
 
   # Iterate over the list to find the matching event
@@ -196,29 +242,16 @@ def pass_time(game_state:Game_State):
 
 
 def recover(game_state:Game_State):
+  addition = int(get_lucky(game_state) / 10)
+  game_state.set_health(game_state.get_health() + addition)
   pass_time(game_state)
 
 
 
-def grow(game_state:Game_State):
-  """Action for growth"""
-  text_path.set_current_text("testing")
-  text_path.set_options([
-    ("pass time", pass_time, None),
-    ("grow again", grow, None),
-  ])
-
-
-
-def is_dead(game_state:Game_State):
-  if game_state.get_health() <= 0: death(game_state)
-
-def death(game_state:Game_State):
-  text_path.set_current_text("No further actions are available. By age or decay, ascension or destruction, your life has met its end. Game Over.")
-  text_path.set_options([
-    ("Exit Game", exit_game, None),
-  ])
-  
+def increase_luck(game_state:Game_State):
+  addition = int(get_lucky(game_state) / 15)
+  game_state.set_luck(game_state.get_luck() + addition)
+  pass_time(game_state)
 
 
 '''
@@ -234,16 +267,14 @@ Mushroom - protection against animals
 
 
 initial_dialogue = (
-  "You are a lone tree. Winter is approaching. Do what you must to survive.",
+  "You are a lone tree, atop a small hill. Mother Nature can be a cuel mistress. Do what you must to survive.",
   [
-    ("Stand tall against the sands of time", fire, None),
+    ("Stand tall against the sands of time", pass_time, None),
     # ("Attend to growth", grow, None),
   ],
 )
 
 text_path = Text_Path(initial_dialogue)
-
-
 
 def game_loop(stdscr:curses.window):
 
@@ -260,8 +291,6 @@ def game_loop(stdscr:curses.window):
   middle_row = int(num_rows / 2)
   middle_column = int(num_cols / 2)
   
-  bg_window = curses.newwin(num_rows, num_cols, 0, 0)
-  game_state = Game_State(bg_window)
 
 
 
@@ -269,7 +298,7 @@ def game_loop(stdscr:curses.window):
   Title Screen
   '''
   
-  title = Text_Image('./ASCII/title.txt', stdscr, curses.color_pair(16)) # TODO: title text color
+  title = Text_Image('./ASCII/title.txt', stdscr, curses.color_pair(16))
   title_x = middle_column - int(title.get_width() / 2) + 4
   title_y = middle_row - int(title.get_height() * 1) + 2
 
@@ -277,13 +306,13 @@ def game_loop(stdscr:curses.window):
   instructions_x = middle_column - int(len(instructions_text) / 2) - 2
   instructions_y = middle_row + 4
 
-  ascii_bug = Text_Image('./ASCII/bug.txt', stdscr, curses.color_pair(17)) # TODO: bug color
+  ascii_bug = Text_Image('./ASCII/bug.txt', stdscr, curses.color_pair(17))
   bug_x = 76
   bug_y = 15
 
   # draw title stuff
   title.draw(title_x, title_y)
-  stdscr.addstr(instructions_y, instructions_x, instructions_text, curses.color_pair(16) | curses.A_BLINK) # TODO: instructions text color
+  stdscr.addstr(instructions_y, instructions_x, instructions_text, curses.color_pair(17) | curses.A_BLINK)
   ascii_bug.draw(bug_x, bug_y)
 
   stdscr.refresh()
@@ -311,6 +340,17 @@ def game_loop(stdscr:curses.window):
   box_x = 2
   text_box = Text_Box(box_height, box_width, box_y, box_x)
 
+  bg_window = curses.newwin(num_rows, num_cols, 0, 0)
+  game_state = Game_State(bg_window)
+
+  game_state.window.clear()
+
+  ascii_tree = Text_Image('./ASCII/tree.txt', game_state.window, curses.color_pair(20))
+  tree_x, tree_y = bg_center(ascii_tree, game_state)
+  ascii_tree.draw(tree_x, tree_y)
+
+  game_state.window.refresh()
+
   # Display current text and options
   text_box.draw_box(text_path)
 
@@ -318,7 +358,6 @@ def game_loop(stdscr:curses.window):
   last_key_time = time.time()  # Timestamp of the last key press
   key_count = 0  # Count of valid key presses
   key_pressed = False  # Flag to track if key is pressed
-
 
 
 

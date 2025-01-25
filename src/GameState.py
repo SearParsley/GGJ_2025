@@ -6,7 +6,7 @@ class Game_State:
     self.health = 100
     self.luck = 0
     self.resources = [
-      "Bark",
+      "Bark", "Leaves", "Grubs"
     ]
     self.num_rows, self.num_cols = window.getmaxyx()
 

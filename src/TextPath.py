@@ -46,4 +46,4 @@ class Text_Path:
     """Choose a dialogue option and execute the action."""
     available_options = self.get_options()
     option_text, action = available_options[option_index]
-    action(game_state)
+    if action is not None: action(game_state)
