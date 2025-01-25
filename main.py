@@ -4,9 +4,13 @@ import os
 
 
 
+def load_ascii_art(file_path):
+  with open(file_path, 'r') as file:
+    return file.read()
 
-
-
+def draw_ascii_art(ascii_art, x, y, window=curses.window):
+  for i, line in enumerate(ascii_art.splitlines()):
+    window.addstr(i + x, y, line)
 
 def main(main_screen):
   # The `screen` is a window that acts as the master window
@@ -18,6 +22,14 @@ def main(main_screen):
 
   # Initialize color in a separate step
   curses.start_color()
+
+  ascii_bug = load_ascii_art('ASCII/bug.txt')
+  bug_window = curses.newwin(4, 12, 0, 0)
+  for i, line in enumerate(ascii_bug.splitlines()):
+    bug_window.addstr(i, 0, line)
+
+  bug_window.refresh()
+  curses.napms(3000)
 
   # Change style: bold, highlighted, and underlined text
   screen.addstr("Regular text\n")
@@ -39,7 +51,7 @@ def main(main_screen):
   screen.addstr("TEST\n", curses.color_pair(64))
 
   screen.refresh()
-  curses.napms(6000)
+  curses.napms(3000)
 
   # lines, columns, start line, start column
   my_window = curses.newwin(15, 20, 0, 0)
