@@ -1,15 +1,14 @@
+import curses
+
 class Text_Box:
-  def __init__(self, window, width, height, start_y, start_x):
-    self.window = window  # Window object to draw the text box
-    self.width = width  # Width of the box
+  def __init__(self, height=int, width=int, start_y=int, start_x=int):
     self.height = height  # Height of the box
+    self.width = width  # Width of the box
     self.start_y = start_y  # Starting y position (row)
     self.start_x = start_x  # Starting x position (column)
-    self.text = "Press any key to change state!"  # Initial text
-    self.text_state_1 = "Press any key to change state!"  # State 1 text
-    self.text_state_2 = "You pressed a key!"  # State 2 text
 
-    self.create_box()  # Draw the box initially
+    # Correct order of arguments for newwin: height, width, start_y, start_x
+    self.window = curses.newwin(height, width, start_y, start_x)
 
   def wrap_text(self, text):
     """Wrap the text to fit within the box width."""
@@ -24,26 +23,28 @@ class Text_Box:
     wrapped_lines.append(text)
     return wrapped_lines
 
-  def create_box(self):
-    """Draw the box and initialize the text inside it."""
-    self.window.clear()  # Clear the window before drawing
-    self.window.box()  # Draw the border of the box
+  def draw_box(self, text, options):
+    """Draw the box and display the text with options."""
+    self.window.clear()
+    self.window.attron(curses.color_pair(16))
+    self.window.box()
+    self.window.attroff(curses.color_pair(16))
 
-    wrapped_text = self.wrap_text(self.text)  # Wrap the text
-    for i, line in enumerate(wrapped_text):
-      # Add each line of wrapped text inside the box
-      self.window.addstr(self.start_y + 1 + i, self.start_x + 1, line[:self.width - 2])  # Ensure text doesn't exceed box width
+    # Wrap and display the main text
+    wrapped_text = self.wrap_text(text)
+    for i, line in enumerate(wrapped_text[:self.height - 3]):  # Reserve space for options
+      # Ensure the cursor stays within window bounds
+      if 1 + i < self.height - 1:  # Leave 1 space at the bottom for borders
+        self.window.addstr(1 + i, 1, line[:self.width - 2])
 
-    self.window.refresh()  # Refresh to update the screen
+    # Display the options below the main text
+    for i, (option_text, _) in enumerate(options[:self.height - len(wrapped_text) - 2]):
+      # Ensure options fit below the text and within the window
+      if len(wrapped_text) + 1 + i < self.height - 1:
+        option_line = f"{i + 1}. {option_text}"
+        self.window.addstr(len(wrapped_text) + 1 + i, 1, option_line[:self.width - 2])
 
-  def update_text(self):
-    """Toggle the text between two states."""
-    if self.text == self.text_state_1:
-      self.text = self.text_state_2
-    else:
-      self.text = self.text_state_1
-    self.create_box()  # Redraw the box with the updated text
+    self.window.refresh()
 
-  def get_input(self):
-    """Wait for a key press and return the key."""
-    return self.window.getch()
+  def hide_box(self):
+    self.window.clear()

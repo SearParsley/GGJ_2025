@@ -1,27 +1,103 @@
 import curses
 import subprocess
 import os
-
-
+from TextBox import Text_Box
+from TextPath import Text_Path
+import palette
 
 def load_ascii_art(file_path):
   with open(file_path, 'r') as file:
     return file.read()
 
-def draw_ascii_art(ascii_art, x, y, window=curses.window):
+def draw_ascii_art(ascii_art, start_x, start_y, window=curses.window):
   for i, line in enumerate(ascii_art.splitlines()):
-    window.addstr(i + x, y, line)
+    window.addstr(i + start_x, start_y, line)
 
-def main(main_screen):
-  # The `screen` is a window that acts as the master window
-  # that takes up the whole screen. Other windows created
-  # later will get painted on to the `screen` window.
-  screen = curses.initscr()
 
+
+
+def game_loop(stdscr):
   curses.curs_set(0)
+  stdscr.clear()
+
+  # master window
+  stdscr = curses.initscr()
+
+  palette.init_colors()
+
+  dialogue_tree = {
+    "start": (
+      "Welcome to the dialogue tree!",
+      [("Go to option 1", "option1"), ("Go to option 2", "option2")]
+    ),
+    "option1": (
+      "You chose option 1. What next?",
+      [("Return to start", "start"), ("Go to option 2", "option2")]
+    ),
+    "option2": (
+      "You chose option 2. What next?",
+      [("Return to start", "start"), ("Go to option 1", "option1")]
+    ),
+  }
+
+
+
+  text_path = Text_Path(dialogue_tree)
+
+  num_rows, num_cols = stdscr.getmaxyx()
+  middle_row = int(num_rows / 2)
+
+  # Test box
+  box_height = 10
+  box_width = num_cols - 2
+  box_y = num_rows - box_height
+  box_x = 2
+  text_box = Text_Box(box_height, box_width, box_y, box_x)
+
+  while True:
+    # Display current text and options
+    current_text = text_path.get_current_text()
+    options = text_path.get_options()
+    text_box.draw_box(current_text, options)
+
+    # Wait for user input
+    key = stdscr.getch()
+
+    if key == ord('q'):  # Quit the game
+      break
+    elif key in range(ord('1'), ord('1') + len(options)):
+      # Choose the option based on user input
+      option_index = key - ord('1')
+      text_path.choose_option(option_index)
+
+  
+
+
+  center_y = num_rows - box_height
+  mid_height = 20
+  mid_width = 80
+  mid_y = int((num_rows - mid_height - box_height) / 2)
+  mid_x = int((num_cols - mid_width) / 2)
+  center_window = curses.newwin(mid_height, mid_width, mid_y, mid_x)
+  center_window.bkgd('.')
+
+
+  center_window.refresh()
+
+
+  while True:
+    key = box.get_input()
+    if key == ord('1'): break
+    box.update_text()
+
+
+
+
+
+
+
 
   # Initialize color in a separate step
-  curses.start_color()
 
   ascii_bug = load_ascii_art('ASCII/bug.txt')
   bug_window = curses.newwin(4, 12, 0, 0)
@@ -29,7 +105,28 @@ def main(main_screen):
     bug_window.addstr(i, 0, line)
 
   bug_window.refresh()
+
+
+  c = stdscr.getch()
+
+  curses.endwin()
+
+  # Convert the key to ASCII and print ordinal value
+  print("You pressed %s which is keycode %d." % (chr(c), c))
+
+
   curses.napms(3000)
+
+
+
+
+
+
+
+
+
+
+
 
   # Change style: bold, highlighted, and underlined text
   screen.addstr("Regular text\n")
@@ -107,6 +204,6 @@ def main(main_screen):
 
 
 if __name__ == '__main__':    
-  curses.wrapper(main)
+  curses.wrapper(game_loop)
 
   
