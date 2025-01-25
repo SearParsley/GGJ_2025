@@ -15,12 +15,18 @@ def get_lucky(game_state:Game_State):
 
 
 
+def bg_center(text_image:Text_Image, game_state:Game_State):
+  image_x = int(game_state.num_cols / 2 - text_image.get_width() / 2)
+  image_y = int(game_state.num_rows - text_image.get_height() - 11)
+  return image_x, image_y
+
+
+
 def fire(game_state:Game_State):
   game_state.window.clear()
 
   ascii_fire = Text_Image('./ASCII/fire.txt', game_state.window, curses.color_pair(21))
-  fire_x = int(game_state.num_cols / 2 - ascii_fire.get_width() / 2)
-  fire_y = int(game_state.num_rows - ascii_fire.get_height() - 11)
+  fire_x, fire_y = bg_center(ascii_fire, game_state)
   ascii_fire.draw(fire_x, fire_y)
   game_state.window.refresh()
 
