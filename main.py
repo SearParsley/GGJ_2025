@@ -57,12 +57,44 @@ def grow(text_path=Text_Path):
     ])
 
 
+def title_screen(stdscr=curses.window):
+
+  # set things up
+  curses.curs_set(0)
+  stdscr.nodelay(True)
+  stdscr.clear()
+  stdscr = curses.initscr()
+  palette.init_colors()
+
+  num_rows, num_cols = stdscr.getmaxyx()
+  middle_row = int(num_rows / 2)
+
+  # strings and such
+
+  while True:
+    stdscr.clear()
+
+    # draw title
+
+
+    # draw instructions
+
+
+
+    stdscr.refresh()
+
+    # wait for input
+    key = stdscr.getch()
+    if key != -1: break
 
 
 def game_loop(stdscr=curses.window):
 
-  # set things up
   curses.curs_set(0)
+
+  title_screen(stdscr)
+
+  # set things up
   stdscr.nodelay(True)
   stdscr.clear()
   stdscr = curses.initscr()
