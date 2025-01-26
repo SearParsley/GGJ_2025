@@ -40,7 +40,6 @@ class Game_State:
 
   def has_resource(self, resource:str):
     """Check if the player has access to a specific resource."""
-    return True
     return resource in self.resources
 
 
