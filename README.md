@@ -419,6 +419,32 @@ I did make small edits to a few of the versions within the game, but  all the on
       ;   :   ;  hjw
 ```
 
+[Rain]()
+```
+          ------               _____
+         /      \ ___\     ___/    ___
+      --/-  ___  /    \/  /  /    /   \
+     /     /           \__     //_     \
+    /                     \   / ___     |
+    |           ___       \/+--/        /
+     \__           \       \           /
+        \__                 |          /     There are holes in the sky,
+       \     /____      /  /       |   /     Where the rain gets in,    
+        _____/         ___       \/  /\      The holes are very small,  
+             \__      /      /    |    |     That's why rain is thin.   
+           /    \____/   \       /   //                                 
+       // / / // / /\    /-_-/\//-__-            - Spike Milligan       
+        /  /  // /   \__// / / /  //
+       //   / /   //   /  // / // /
+        /// // / /   /  //  / //
+     //   //       //  /  // / /
+       / / / / /     /  /    /
+    ///  / / /  //  // /  // //
+       ///    /    /    / / / /
+  ///  /    // / /  // / / /  /
+     // ///   /      /// / /
+```
+
 [Cat Eyes](https://ascii.co.uk/art/cat)
 ```
     _.---.._             _.---...__

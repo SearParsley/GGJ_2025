@@ -10,6 +10,7 @@ colors = [
   166, # orange      : 21 : fire
   131, # dark brown  : 22 : bark
   220, # med yellow  : 23 : sun
+  25,  # dark blue   : 24 : rain
 ]
 
 def init_colors():

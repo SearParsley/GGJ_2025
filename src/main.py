@@ -50,7 +50,7 @@ def sacrifice_bark(game_state:Game_State):
   game_state.set_luck(game_state.get_luck() + 20)
   text_path.set_current_text("The fire burns through your sturdy bark, reducing it to ash, but the rest of you remains intact.")
   text_path.set_options([
-    ("Continue with determination", pass_time, None),
+    ("Continue with determination", brief_respite, None),
   ])
 
 def sacrifice_hydration(game_state:Game_State):
@@ -107,11 +107,9 @@ def get_chopped(game_state:Game_State):
 
 def spores_lumberjack(game_state:Game_State):
   game_state.window.clear()
-
   ascii_mushroom = Text_Image('./ASCII/mushroom.txt', game_state.window, curses.color_pair(22))
   mushroom_x, mushroom_y = bg_center(ascii_mushroom, game_state)
   ascii_mushroom.draw(mushroom_x, mushroom_y)
-
   game_state.window.refresh()
 
   text_path.set_current_text("The man first spats in surprise, then with disgust. He coughs, then turns quickly and departs.")
@@ -129,19 +127,17 @@ def consume_mushroom(game_state:Game_State):
   increase_luck(game_state)
 
   game_state.window.clear()
-
   ascii_mushroom = Text_Image('./ASCII/mushroom.txt', game_state.window, curses.color_pair(22))
   mushroom_x, mushroom_y = bg_center(ascii_mushroom, game_state)
   ascii_mushroom.draw(mushroom_x - 16, mushroom_y)
   ascii_tree = Text_Image('./ASCII/tree.txt', game_state.window, curses.color_pair(20))
   tree_x, tree_y = bg_center(ascii_tree, game_state)
   ascii_tree.draw(tree_x + 18, tree_y)
-
   game_state.window.refresh()
 
   text_path.set_current_text("Your roots knew of the toxins, but power often comes at a cost. The mushrooms are no more.")
   text_path.set_options([
-    ("Overlook your small, yet glorious hill", pass_time, None),
+    ("Overlook your small, yet glorious hill", brief_respite, None),
   ])
 
 
@@ -157,13 +153,11 @@ def storm(game_state:Game_State):
 
 def woodpecker(game_state:Game_State):
   game_state.window.clear()
-
   ascii_woodpecker = Text_Image('./ASCII/woodpecker.txt', game_state.window, curses.color_pair(17))
   woodpecker_x, woodpecker_y = bg_center(ascii_woodpecker, game_state)
   ascii_woodpecker.draw(woodpecker_x-3, woodpecker_y)
   ascii_trunk = Text_Image('./ASCII/trunk.txt', game_state.window, curses.color_pair(22))
   ascii_trunk.draw(woodpecker_x+3, woodpecker_y)
-
   game_state.window.refresh()
 
   text_path.set_current_text("A pesky woodpecker decides you're the perfect perch, and begins hammering into your side.")
@@ -176,12 +170,10 @@ def sacrifice_grubs(game_state:Game_State):
   game_state.remove_resource("Grubs")
 
   game_state.window.clear()
-
   ascii_woodpecker = Text_Image('./ASCII/woodpecker.txt', game_state.window, curses.color_pair(0))
   woodpecker_x, woodpecker_y = bg_center(ascii_woodpecker, game_state)
   ascii_trunk = Text_Image('./ASCII/trunk.txt', game_state.window, curses.color_pair(22))
   ascii_trunk.draw(woodpecker_x+3, woodpecker_y)
-
   game_state.window.refresh()
 
   text_path.set_current_text("The intruder quickly leaves after finding its dinner in your recesses.")
@@ -195,7 +187,7 @@ def get_pecked(game_state:Game_State):
 
   text_path.set_current_text("It feels anything but pleasant, but not much harm is done.")
   text_path.set_options([
-    ("Contemplate the seasons", pass_time, None),
+    ("Contemplate the seasons", brief_respite, None),
   ])  
 
 
@@ -203,8 +195,8 @@ def get_pecked(game_state:Game_State):
 def snow(game_state:Game_State):
   text_path.set_current_text("snow prompt") # TODO: snow
   text_path.set_options([
-    ("option 1", pass_time, None),
-    ("option 2", pass_time, None),
+    ("option 1", brief_respite, None),
+    ("option 2", brief_respite, None),
   ])
 
 
@@ -212,8 +204,8 @@ def snow(game_state:Game_State):
 def spider(game_state:Game_State):
   text_path.set_current_text("spider prompt") # TODO: spider
   text_path.set_options([
-    ("option 1", pass_time, None),
-    ("option 2", pass_time, None),
+    ("option 1", brief_respite, None),
+    ("option 2", brief_respite, None),
   ])
 
 
@@ -221,26 +213,46 @@ def spider(game_state:Game_State):
 def bird(game_state:Game_State):
   text_path.set_current_text("bird prompt") # TODO: bird
   text_path.set_options([
-    ("option 1", pass_time, None),
-    ("option 2", pass_time, None),
+    ("option 1", brief_respite, None),
+    ("option 2", brief_respite, None),
   ])
 
 
 
 def rain(game_state:Game_State):
-  text_path.set_current_text("rain prompt") # TODO: rain
+  if not game_state.has_resource("Hydrated"): game_state.add_resource("Hydrated")
+
+  game_state.window.clear()
+  ascii_rain = Text_Image('./ASCII/rain.txt', game_state.window, curses.color_pair(24))
+  rain_x, rain_y = bg_center(ascii_rain, game_state)
+  ascii_rain.draw(rain_x, 0)
+  game_state.window.refresh()
+
+  text_path.set_current_text("Dark clouds crawl through the sky, coming to a halt in your proximity. It begins to rain.")
   text_path.set_options([
-    ("option 1", pass_time, None),
-    ("option 2", pass_time, None),
+    ("Weather the storm", big_rain, None),
   ])
+
+def big_rain(game_state:Game_State):
+  if game_state.has_resource("Bark"):
+    text_path.set_current_text("Your thick bark protects you from the frigid rain.")
+    text_path.set_options([
+      ("Revel in the downpour", luck_event, None),
+    ])
+  else:
+    game_state.set_health(game_state.get_health() - 15)
+    text_path.set_current_text("Without an outer protective layer, the frigid rain damages your roots.")
+    text_path.set_options([
+      ("Wait out the storm", brief_respite, None),
+    ])
 
 
 
 def friend(game_state:Game_State):
   text_path.set_current_text("friend prompt") # TODO: friend
   text_path.set_options([
-    ("option 1", pass_time, None),
-    ("option 2", pass_time, None),
+    ("option 1", brief_respite, None),
+    ("option 2", brief_respite, None),
   ])
 
 
@@ -277,8 +289,7 @@ def gain_acorn(game_state:Game_State):
 
   text_path.set_current_text("You have produced an acorn. Now all it needs is its own space to propagate.")
   text_path.set_options([
-    ("option 1", pass_time, None),
-    ("option 2", pass_time, None),
+    ("Celebrate your new progeny", luck_event, None),
   ])
 
 
@@ -325,28 +336,38 @@ def luck_event(game_state:Game_State):
 
 
 
+def brief_respite(game_state:Game_State):
+  game_state.window.clear()
+  ascii_tree = Text_Image('./ASCII/tree.txt', game_state.window, curses.color_pair(20))
+  tree_x, tree_y = bg_center(ascii_tree, game_state)
+  ascii_tree.draw(tree_x, tree_y)
+  game_state.window.refresh()
+
+  text_path.set_current_text("You have a brief respite as time passes.")
+  text_path.set_options([
+    ("Continue", pass_time, None),
+  ])
+
+
 
 # List of (luck threshold, function, cooldown) tuples
 events = [
-  (10, fire, 3),
-  (20, lumberjack, 3),
-  (30, storm, 3),
-  (40, woodpecker, 2),
-  (50, snow, 3),
-  (60, spider, 2),
-  (70, bird, 2),
-  (80, rain, 1),
-  (90, friend, 3),
-  (100, sun, 1),
+  (fire, 3),
+  (lumberjack, 3),
+  # (storm, 3),
+  (woodpecker, 2),
+  # (snow, 3),
+  # (spider, 2),
+  # (bird, 2),
+  (rain, 2),
+  # (friend, 3),
+  (sun, 1),
 ]
 
 event_history = []
 
 def can_trigger_event(event_name, cooldown):
-  """
-  Check if an event can be triggered based on its cooldown.
-  """
-  # Count the total number of events that have occurred
+  """Check if an event can be triggered based on its cooldown."""
   total_events = len(event_history)
 
   # Get the last occurrence of the given event
@@ -355,9 +376,8 @@ def can_trigger_event(event_name, cooldown):
     None,
   )
 
-  # If the event has never occurred, it can be triggered
   if last_occurrence is None:
-    return True
+    return True  # Event can trigger if never occurred
 
   # Check if enough other events have occurred since the last occurrence
   return total_events - last_occurrence > cooldown
@@ -366,26 +386,25 @@ def can_trigger_event(event_name, cooldown):
 
 def pass_time(game_state:Game_State):
   """Action for passing time"""
-
   game_state.window.clear()
 
-  sun(game_state)
-  return
-
-
   chance = get_lucky(game_state)
+  chance_gap = int(100 / len(events))
 
-  # Iterate over the list to find the matching event
-  for threshold, event, cooldown in events:
-    event_name = event.__name__  # Use the function's name as the event identifier
+  # Try triggering an event based on chance
+  for i, (event, cooldown) in enumerate(events):
+    event_name = event.__name__  # Get the function name as event identifier
 
-    if chance <= threshold and can_trigger_event(event_name, cooldown):
+    if chance <= (i + 1) * chance_gap and can_trigger_event(event_name, cooldown):
       event(game_state)  # Trigger the event
       event_history.append(event_name)  # Add to event history
       break  # Stop checking once a match is found
-  
-  choice = random.randrange(len(events))
-  
+  else:
+    # If no event was triggered, select a random event
+    event = random.choice(events)[0]
+    event_name = event.__name__  # Get the event name
+    event(game_state)  # Trigger the event
+    event_history.append(event_name)  # Add to event history  
 
 
 
