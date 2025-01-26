@@ -11,12 +11,11 @@
 
 ## Overview
 
-This is a simple command-line game which I fully designed and created in 24 hours for the 2025 Global Game Jam. It was built using Python and the `curses` library, in addition to ASCII assets available online (with various edits).
+This is a simple command-line game which I fully designed and created in 24 hours for the 2025 [Global Game Jam](https://globalgamejam.org/), hosted by my [university](https://globalgamejam.org/jam-sites/2025/utah-state-university). It was built using Python and its `curses` library, in addition to ASCII assets available online (with some edits).
 
-You play as a tree, and must make branching (pun intended) decisions to survive in this world. Your choices will impact what options are available for you in the future.
+You play as a lone tree, and you must make branching (pun intended) decisions to survive in this world. Your choices will impact what options are available for you in the future.
 
 In the current (demo) build, there is no 'win' condition, but reaching 0 health will result in a game over. My current plan for a future win condition is to propagate a seed and nurture it into a sapling. But for now, we just keep going through available events until you quit or die.
-
 ## Installation
 
 ### Prerequisites
@@ -61,7 +60,7 @@ The controls are very simple. Each text box will have a message followed by one 
 
 ### ASCII Art
 
-I did make small edits to a few of the versions within the game, but each listed below is unmodified and linked to where I sourced it.
+I did make edits to some of the versions within the game, but those listed below are unmodified and linked to where I sourced it.
 
 [Bug](https://ascii.co.uk/art/bug)
 ```
