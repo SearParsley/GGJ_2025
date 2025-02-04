@@ -1,4 +1,4 @@
-# GGJ_2025
+# Branching Out
 
 ## Table of Contents
 
@@ -60,7 +60,7 @@ The controls are very simple. Each text box will have a message followed by one 
 
 ### ASCII Art
 
-I did make edits to some of the versions within the game, but those listed below are unmodified and linked to where I sourced it.
+Many of the in-game versions have been modified to fit my needs, but each of the ASCII images shown below is unmodified. While the origin of many ASCII images may be lost to time, I provide a link to where I was able to find each image.
 
 [Bug](https://ascii.co.uk/art/bug)
 ```
